@@ -3,7 +3,7 @@
 
 ######################### We start with some black magic to print on failure.
 
-BEGIN { $| = 1; print "1..16\n"; }
+BEGIN { $| = 1; print "1..17\n"; }
 END {print "not ok 1\n" unless $loaded;}
 
 use ShiftJIS::CP932::MapUTF;
@@ -32,7 +32,7 @@ print 1
    && "\n\n" eq utf16be_to_cp932("\x00\n\x00\n")
    && "\x82\xa0\x82\xa2\x82\xa4\x81\xe0\x82\xa6\x82\xa8" eq
  utf16be_to_cp932("\xfe\xff\x30\x42\x30\x44\x30\x46\x22\x52\x30\x48\x30\x4a")
-   && "" eq utf16le_to_cp932("") 
+   && "" eq utf16le_to_cp932("")
    && "\n\n" eq utf16le_to_cp932("\n\x00\n\x00")
    && "\x82\xa0\x82\xa2\x82\xa4\x81\xe0\x82\xa6\x82\xa8" eq
  utf16le_to_cp932("\xff\xfe\x42\x30\x44\x30\x46\x30\x52\x22\x48\x30\x4a\x30")
@@ -107,11 +107,11 @@ print $vu_uni  eq cp932_to_unicode($code_uni,  $vu_sjis)
   ? "ok" : "not ok", " 8\n";
 
 print 1
-  && "&#x10000;abc&#x12345;xyz&#x10ffff;" eq 
+  && "&#x10000;abc&#x12345;xyz&#x10ffff;" eq
      utf16le_to_cp932(\&hexNCR,
         "\x00\xd8\x00\xdc\x61\x00\x62\x00\x63\x00\x08\xD8\x45\xDF"
       . "\x78\x00\x79\x00\x7a\x00\xff\xdb\xff\xdf")
-  && "&#x10000;abc&#x12345;xyz&#x10ffff;" eq 
+  && "&#x10000;abc&#x12345;xyz&#x10ffff;" eq
      utf16be_to_cp932(\&hexNCR,
         "\xd8\x00\xdc\x00\x00\x61\x00\x62\x00\x63\xD8\x08\xDF\x45"
       . "\x00\x78\x00\x79\x00\x7a\xdb\xff\xdf\xff")
@@ -129,20 +129,24 @@ print "&#x00ff;\x81\x93\x83\xbf&#xacde;" x $repeat eq
 print "\x81\x7E\x00\x81\x80\0\x41" eq unicode_to_cp932("\xd7\x00\xf7\0\x41")
   ? "ok" : "not ok", " 12\n";
 
-print "\x{ff71}\x{ff72}\x{ff73}\x{ff74}\x{ff75}" x $repeat eq 
-  cp932_to_unicode("\xb1\xb2\xb3\xb4\xb5" x $repeat)
+print "\x{ff71}\x{ff72}\x{ff73}\x{ff74}\x{ff75}" x $repeat eq
+  cp932_to_unicode("\xb1\xb2\xb3\xb4\xb5" x $repeat) # han-kana
   ? "ok" : "not ok", " 13\n";
 
 print "&#x00ff;\x81\x93\x83\xbf&#xacde;" x $repeat eq
   unicode_to_cp932(\&hexNCR, "\x{ff}\x{ff05}\x{03B1}\x{acde}" x $repeat)
   ? "ok" : "not ok", " 14\n";
 
-print "HIRAGANA LETTER VU" x $repeat eq 
-  cp932_to_unicode($code_vn, "\x82\xf2" x $repeat)
+print "\x81\x4c\x81\x4e\x81\x7d\x81\x7e\x81\x80" x $repeat eq
+  unicode_to_cp932("\xb4\xa8\xb1\xd7\xf7" x $repeat) # latin 1
   ? "ok" : "not ok", " 15\n";
 
-# "HI" is not ASCII 'H' and 'I'; This is UTF-16.
-print "HIRAGANA LETTER VU" x $repeat eq 
-  cp932_to_utf16be($code_vn, "\x82\xf2" x $repeat)
+print "HIRAGANA LETTER VU" x $repeat eq
+  cp932_to_unicode($code_vn, "\x82\xf2" x $repeat)
   ? "ok" : "not ok", " 16\n";
+
+# "HI" is not ASCII 'H' and 'I'; This is UTF-16.
+print "HIRAGANA LETTER VU" x $repeat eq
+  cp932_to_utf16be($code_vn, "\x82\xf2" x $repeat)
+  ? "ok" : "not ok", " 17\n";
 

@@ -1,4 +1,4 @@
-ShiftJIS::CP932::MapUTF version 0.12
+ShiftJIS::CP932::MapUTF version 0.13
 ================
 
 NAME
@@ -50,8 +50,8 @@ COPYRIGHT AND LICENCE
 
     Copyright(C) 2001-2002, SADAHIRO Tomoyuki. Japan. All rights reserved.
 
-    This program is free software; you can redistribute it and/or 
-    modify it under the same terms as Perl itself.
+    This module is free software; you can redistribute it
+    and/or modify it under the same terms as Perl itself.
 
 SEE ALSO
 

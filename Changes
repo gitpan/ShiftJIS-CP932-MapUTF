@@ -1,5 +1,8 @@
 Revision history for Perl module ShiftJIS::CP932::MapUTF.
 
+0.13  Sat May 11 13:55:25 2002
+    - unreferenced local variables are removed.
+
 0.12  Sun Apr 14 22:53:12 2002
     - now uses utf8n_to_uvuni() instead of utf8n_to_uvchr().
     - some doc fix.

@@ -17,7 +17,7 @@ require AutoLoader;
 );
 @EXPORT_OK = ();
 
-$VERSION = '0.12';
+$VERSION = '0.13';
 
 bootstrap ShiftJIS::CP932::MapUTF $VERSION;
 
@@ -38,22 +38,22 @@ ShiftJIS::CP932::MapUTF - conversion between Microsoft Windows CP-932 and Unicod
 
 The Microsoft Windows CodePage 932 (CP-932) table comprises 7915 characters:
 
-    JIS X 0201-1997 single-byte characters (159 characters),
-    JIS X 0211-1994 single-byte characters (32 characters),
-    JIS X 0208-1997 double-byte characters (6879 characters),
-    NEC special characters (83 characters from SJIS row 13),
-    NEC-selected IBM extended characters (374 characters from SJIS row 89 to 92),
-    and IBM extended characters (388 characters from SJIS row 115 to 119).
+    JIS X 0201:1997 single-byte characters (159 characters),
+    JIS X 0211:1994 single-byte characters (32 characters),
+    JIS X 0208:1997 double-byte characters (6879 characters),
+    NEC special characters (83 characters in SJIS row 13),
+    NEC-selected IBM extended characters (374 characters in SJIS rows 89..92),
+    and IBM extended characters (388 characters in SJIS rows 115..119).
 
 It contains duplicates that do not round trip
 map. These duplicates are due to the characters defined
 by vendors, NEC and IBM.
 
-For example, there are two characters that are mapped to U+2252,
-namely, 0x81e0 (a JIS X 0208 character) and 0x8790 (an NEC special character).
+For example, there are two characters that are mapped to U+2252;
+i.e., 0x81e0 (a JIS X 0208 character) and 0x8790 (an NEC special character).
 
 This module provides some functions to map
-from Windows CP-932 to Unicode, and vice versa. 
+from Windows CP-932 to Unicode, and vice versa.
 
 =over 4
 
@@ -121,8 +121,8 @@ if C<CODEREF> is not specified;
 otherwise, converted using the C<CODEREF>
 from its Unicode codepoint (integer).
 
-For example, characters unmapped to Windows CP-932
-are converted to numerical character references for HTML 4.01.
+For example, characters unmapped to Windows CP-932 are
+converted to numerical character references for HTML 4.01.
 
     unicode_to_cp932(sub {sprintf "&#x%04x;", shift}, $unicode_string);
 
@@ -155,8 +155,8 @@ are converted to numerical character references for HTML 4.01.
 
 =head1 CAVEAT
 
-This module up to version 0.07 treats with "encoded UTF-8",
-by C<cp932_to_utf8()> and C<utf8_to_cp932()>,
+This module up to version 0.07 had treated with "encoded UTF-8",
+via C<cp932_to_utf8()> and C<utf8_to_cp932()>,
 but these functions are obsolete.
 
 =head1 AUTHOR
@@ -168,22 +168,20 @@ Tomoyuki SADAHIRO
 
   Copyright(C) 2001-2002, SADAHIRO Tomoyuki. Japan. All rights reserved.
 
-This program is free software; you can redistribute it and/or 
-modify it under the same terms as Perl itself.
+This module is free software; you can redistribute it
+and/or modify it under the same terms as Perl itself.
 
 =head1 SEE ALSO
 
 =over 4
 
-=item Microsoft PRB: Conversion Problem Between Shift-JIS and Unicode (Article ID: Q170559)
+=item Microsoft PRB, Article ID: Q170559
+
+Conversion Problem Between Shift-JIS and Unicode
 
 =item ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP932.TXT
 
-=item L<perlunicode>
-
-=item L<utf8>
-
-=item L<ShiftJIS::CP932::Correct>
+cp932 to Unicode table
 
 =back
 

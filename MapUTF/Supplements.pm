@@ -12,7 +12,7 @@ require Exporter;
 @EXPORT = qw(to_cp932_supplements);
 @EXPORT_OK = qw(%Supplements);
 
-$VERSION = '0.12';
+$VERSION = '0.13';
 
 %Supplements = (
   0x00A2,	# CENT SIGN
@@ -133,8 +133,8 @@ Tomoyuki SADAHIRO
 
   Copyright(C) 2001-2002, SADAHIRO Tomoyuki. Japan. All rights reserved.
 
-This program is free software; you can redistribute it and/or 
-modify it under the same terms as Perl itself.
+This module is free software; you can redistribute it
+and/or modify it under the same terms as Perl itself.
 
 =head1 SEE ALSO
 

@@ -5,13 +5,15 @@
 #include "fmcp932.h"
 #include "tocp932.h"
 
-#define isCP932SNG(i)   (0x00<=(i) && (i)<=0x7F || 0xA1<=(i) && (i)<=0xDF)
-#define isCP932LED(i)   (0x81<=(i) && (i)<=0x9F || 0xE0<=(i) && (i)<=0xFC)
-#define isCP932TRL(i)   (0x40<=(i) && (i)<=0x7E || 0x80<=(i) && (i)<=0xFC)
+#define PkgName "ShiftJIS::CP932::MapUTF"
 
-#define isCP932SBC(p)   (isCP932SNG(*(p)))
-#define isCP932DBC(p)   (isCP932LED(*(p)) && isCP932TRL((p)[1]))
-#define isCP932MBLEN(p) (isCP932DBC(p) ? 2 : 1)
+#define Is_CP932SNG(i)   (0x00<=(i) && (i)<=0x7F || 0xA1<=(i) && (i)<=0xDF)
+#define Is_CP932LED(i)   (0x81<=(i) && (i)<=0x9F || 0xE0<=(i) && (i)<=0xFC)
+#define Is_CP932TRL(i)   (0x40<=(i) && (i)<=0x7E || 0x80<=(i) && (i)<=0xFC)
+
+#define Is_CP932SBC(p)   (Is_CP932SNG(*(p)))
+#define Is_CP932DBC(p)   (Is_CP932LED(*(p)) && Is_CP932TRL((p)[1]))
+#define Is_CP932MBLEN(p) (Is_CP932DBC(p) ? 2 : 1)
 
 /* Perl 5.6.1 ? */
 #ifndef uvuni_to_utf8
@@ -37,7 +39,7 @@ sv_cat_retcvref (SV *dst, SV *cv, SV *sv)
     count = call_sv(cv, G_SCALAR);
     SPAGAIN;
     if (count != 1)
-	croak("Panic in XS, ShiftJIS::CP932::MapUTF\n");
+	croak("Panic in XS, " PkgName "\n");
     retsv = newSVsv(POPs);
     PUTBACK;
     FREETMPS;
@@ -55,7 +57,7 @@ cp932_to_unicode (arg1, arg2=0)
   PROTOTYPE: $;$
   PREINIT:
     SV *src, *dst, *cvref;
-    STRLEN srclen, dstlen, dstcur, mblen;
+    STRLEN srclen, dstlen, mblen;
     STRLEN maxlen = 3;
 	/* ASCII: 1 to 1; kana: 1 to 3|4; Greak: 2 to 2; Kanji: 2 to 3|4 */
     U8 *s, *e, *p, *d, uni[UTF8_MAXLEN + 1];
@@ -67,7 +69,7 @@ cp932_to_unicode (arg1, arg2=0)
 	if (SvROK(arg1) && SvTYPE(SvRV(arg1)) == SVt_PVCV)
 	    cvref = SvRV(arg1);
 	else
-	    croak("ShiftJIS::CP932::MapUTF 1st argument is not CODEREF");
+	    croak(PkgName " 1st argument is not CODEREF");
 
     maxlen = UNISKIP(0xff71); /* 3 or 4; HALFWIDTH KATAKANA LETTER A */
 
@@ -82,7 +84,7 @@ cp932_to_unicode (arg1, arg2=0)
 
     if (cvref) {
 	for (p = s; p < e; p += mblen) {
-	    mblen = isCP932MBLEN(p);
+	    mblen = Is_CP932MBLEN(p);
 	    lb = fmcp932_tbl[*p];
 	    uv = (lb.tbl != NULL) ? lb.tbl[p[1]] : lb.sbc;
 	    if (uv || !*p) {
@@ -96,7 +98,7 @@ cp932_to_unicode (arg1, arg2=0)
     else {
 	d = (U8*)SvPVX(dst);
 	for (p = s; p < e; p += mblen) {
-	    mblen = isCP932MBLEN(p);
+	    mblen = Is_CP932MBLEN(p);
 	    lb = fmcp932_tbl[*p];
 	    uv = (lb.tbl != NULL) ? lb.tbl[p[1]] : lb.sbc;
 	    if (uv || !*p)
@@ -117,7 +119,7 @@ cp932_to_utf16le (arg1, arg2=0)
     cp932_to_utf16be = 1
   PREINIT:
     SV *src, *dst, *cvref;
-    STRLEN srclen, dstlen, dstcur, mblen;
+    STRLEN srclen, dstlen, mblen;
     STRLEN maxlen = 2; /* X0201 : 1 to 2; X0208 : 2 to 2 */
     U8 *s, *e, *p, *d, ucs[3];
     UV uv;
@@ -128,7 +130,7 @@ cp932_to_utf16le (arg1, arg2=0)
 	if (SvROK(arg1) && SvTYPE(SvRV(arg1)) == SVt_PVCV)
 	    cvref = SvRV(arg1);
 	else
-	    croak("ShiftJIS::CP932::MapUTF 1st argument is not CODEREF");
+	    croak(PkgName " 1st argument is not CODEREF");
 
     src = cvref ? arg2 : arg1;
     s = (U8*)SvPV(src,srclen);
@@ -140,7 +142,7 @@ cp932_to_utf16le (arg1, arg2=0)
 
     if (cvref) {
 	for (p = s; p < e; p += mblen) {
-	    mblen = isCP932MBLEN(p);
+	    mblen = Is_CP932MBLEN(p);
 	    lb = fmcp932_tbl[*p];
 	    uv = (lb.tbl != NULL) ? lb.tbl[p[1]] : lb.sbc;
 	    if (uv || !*p) {
@@ -155,7 +157,7 @@ cp932_to_utf16le (arg1, arg2=0)
     else {
 	d = (U8*)SvPVX(dst);
 	for (p = s; p < e; p += mblen) {
-	    mblen = isCP932MBLEN(p);
+	    mblen = Is_CP932MBLEN(p);
 	    lb = fmcp932_tbl[*p];
 	    uv = (lb.tbl != NULL) ? lb.tbl[p[1]] : lb.sbc;
 	    if (uv || !*p) {
@@ -179,12 +181,11 @@ unicode_to_cp932 (arg1, arg2=0)
   PROTOTYPE: $;$
   PREINIT:
     SV *src, *dst, *cvref;
-    STRLEN srclen, dstlen, retlen, dstcur;
-    STRLEN maxlen = 2; 
-	/* ASCII: 1 to 1; latin1: 1 to 2; (if SvUTF8 off)
+    STRLEN srclen, dstlen, retlen;
+    STRLEN maxlen = 1; 
+	/* ASCII: 1 to 1; @latin1: 1 to 2; but upgrade() grows it.@
 	   kana: 3|4 to 1; Greek:  2 to 2; Kanji: 3|4 to 2 */
     U8 *s, *e, *p, *d, mbc[3];
-    int ulen;
     U16 j, *t;
     UV uv;
   PPCODE:
@@ -193,7 +194,7 @@ unicode_to_cp932 (arg1, arg2=0)
 	if (SvROK(arg1) && SvTYPE(SvRV(arg1)) == SVt_PVCV)
 	    cvref = SvRV(arg1);
 	else
-	    croak("ShiftJIS::CP932::MapUTF 1st argument is not CODEREF");
+	    croak(PkgName " 1st argument is not CODEREF");
 
     src = cvref ? arg2 : arg1;
     if (!SvUTF8(src)) {
@@ -258,7 +259,7 @@ utf16le_to_cp932 (arg1, arg2=0)
     utf16be_to_cp932 = 1
   PREINIT:
     SV *src, *dst, *cvref;
-    STRLEN srclen, dstlen, dstcur;
+    STRLEN srclen, dstlen;
     STRLEN maxlen = 1; /* X0201 : 2 to 1; X0208 : 2 to 2 */
     U8 *s, *e, *p, *d, row, cell, mbc[3];
     U16 j, *t;
@@ -269,7 +270,7 @@ utf16le_to_cp932 (arg1, arg2=0)
 	if (SvROK(arg1) && SvTYPE(SvRV(arg1)) == SVt_PVCV)
 	    cvref = SvRV(arg1);
 	else
-	    croak("ShiftJIS::CP932::MapUTF 1st argument is not CODEREF");
+	    croak(PkgName " 1st argument is not CODEREF");
 
     src = cvref ? arg2 : arg1;
     s = (U8*)SvPV(src,srclen);
