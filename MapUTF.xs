@@ -13,6 +13,8 @@
 #define Is_CP932_TRL(i)   (0x40<=(i) && (i)<=0x7E || 0x80<=(i) && (i)<=0xFC)
 #define Is_CP932_EUDC(i)  (0xF0<=(i) && (i)<=0xF9)
 #define Is_CP932_UDSB(i)  ((i)==0x80 || (i)==0xA0 || 0xFD<=(i) && (i)<=0xFF)
+#define Is_CP932_SNG(i)   (0x00<=(i) && (i)<=0x80 || 0xA0<=(i) && (i)<=0xDF \
+			|| 0xFD<=(i) && (i)<=0xFF)
 
 #define CP932_UDSB2PUA(i) ((i) == 0x80 ? 0x80 : (i) == 0xA0 ? 0xF8F0 \
 				: (i) + 0xF8F0 - 0xFC)
@@ -53,24 +55,24 @@
     (void)SvPOK_only(dst);
 
 
+#define STMT_GET_MBLEN					\
+    mblen = Is_CP932_LED(*(p)) && 2 <= (e - p)		\
+	? (!mod_t || Is_CP932_TRL((p)[1])) ? 2 : 0	\
+	: Is_CP932_SNG(*(p)) ? 1 : 0;
+
+
 #define STMT_GET_UV_FROM_MB				\
-    if (mod_g && Is_CP932_EUDC(*(p)) && Is_CP932_TRL((p)[1])) {	\
-	mblen = 2;					\
+    if (mod_g && Is_CP932_EUDC(*(p)) &&			\
+	Is_CP932_TRL((p)[1]) ) {			\
 	uv = 0xE000 + 188 * (*(p) - 0xF0) +		\
-		(p)[1] - ((p)[1] > 0x7E ? 0x41 : 0x40);	\
+	    (p)[1] - ((p)[1] > 0x7E ? 0x41 : 0x40);	\
     }							\
     else if (mod_s && Is_CP932_UDSB(*(p))) {		\
-	mblen = 1;					\
 	uv = (UV) CP932_UDSB2PUA(*(p));			\
     }							\
     else {						\
-	mblen = Is_CP932_LED(*(p))			\
-	    ? (mod_t ? Is_CP932_TRL((p)[1]) : ((p)+1 < (e))) ? 2 : 0	\
-	    : 1;					\
-	if (mblen) {					\
-	    lb = fmcp932_tbl[*p];			\
-	    uv = lb.tbl ? lb.tbl[p[1]] : lb.sbc;	\
-	}						\
+	lb = fmcp932_tbl[*p];				\
+	uv = lb.tbl ? lb.tbl[p[1]] : lb.sbc;		\
     }
 
 
@@ -96,10 +98,11 @@ sv_cat_retcvref (SV *dst, SV *cv, SV *sv, bool isbyte)
 	XPUSHs(&PL_sv_undef);
     XPUSHs(sv_2mortal(sv));
     PUTBACK;
-    count = call_sv(cv, G_SCALAR);
+    count = call_sv(cv, (G_EVAL|G_SCALAR));
     SPAGAIN;
-    if (count != 1)
-	croak("Panic in XS, " PkgName "\n");
+    if (SvTRUE(ERRSV) || count != 1) {
+	croak("died in XS, " PkgName "\n");
+    }
     sv_catsv(dst,POPs);
     PUTBACK;
     FREETMPS;
@@ -211,7 +214,7 @@ cp932_to_unicode(...)
 
     if (cvref) {
 	for (p = s; p < e; p += mblen) {
-	    STMT_GET_UV_FROM_MB
+	    STMT_GET_MBLEN
 
 	    if (!mblen) {
 		sv_cat_retcvref(dst, cvref, newSVuv((UV)*p), TRUE);
@@ -219,8 +222,11 @@ cp932_to_unicode(...)
 		continue;
 	    }
 
+	    STMT_GET_UV_FROM_MB
+
 	    if (uv || !*p) {
-		ulen = (ix ? app_uv(uni, uv) : uvuni_to_utf8(uni, uv)) - uni;
+		ulen = ix ? app_uv(uni, uv) - uni
+			  : uvuni_to_utf8(uni, uv) - uni;
 		sv_catpvn(dst, (char*)uni, ulen);
 	    } else
 		sv_cat_retcvref(dst, cvref, newSVpvn((char*)p, mblen), FALSE);
@@ -229,12 +235,14 @@ cp932_to_unicode(...)
     else {
 	d = (U8*)SvPVX(dst);
 	for (p = s; p < e; p += mblen) {
-	    STMT_GET_UV_FROM_MB
+	    STMT_GET_MBLEN
 
 	    if (!mblen) {
 		p++;
 		continue;
 	    }
+
+	    STMT_GET_UV_FROM_MB
 
 	    if (uv || !*p) {
 		d = ix ? app_uv(d, uv) : uvuni_to_utf8(d, uv);
@@ -288,7 +296,7 @@ unicode_to_cp932(...)
 
     ord_uv = ord_uv_in[ix];
 
-    if (ix == 6) { /* UTF-16 */
+    if (ix == 6 && 2 <= e - s) { /* UTF-16 */
 	if (memEQ("\xFF\xFE",s,2)) {
 	    s += 2;
 	    ord_uv = ord_in_utf16le;
@@ -297,7 +305,7 @@ unicode_to_cp932(...)
 	    s += 2;
 	}
     }
-    else if (ix == 7) {  /* UTF-32 */
+    else if (ix == 7 && 4 <= e - s) {  /* UTF-32 */
 	if (memEQ("\xFF\xFE\x00\x00",s,4)) {
 	    s += 4;
 	    ord_uv = ord_in_utf32le;

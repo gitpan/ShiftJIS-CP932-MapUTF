@@ -1,5 +1,9 @@
 Revision history for Perl module ShiftJIS::CP932::MapUTF.
 
+0.33  Sat Oct 11 20:34:47 2003
+    - Internal tweak in XSUB: no longer relies on a string to be
+      terminated with '\0'.
+
 0.32  Sun Jul 20 13:23:44 2003
     - changed INSTALLATION (cf. README).
     - simplified Makefile.PL.
@@ -14,6 +18,8 @@ Revision history for Perl module ShiftJIS::CP932::MapUTF.
 
 0.30  Sun May 04 11:12:21 2003
     - clarified and documented on some ambiguous behaviors.
+    - manipulation of illegal ShiftJIS strings: SJIS_CALLBACK coderef are
+      called with two parameters (like UNICODE_CALLBACK).
     - added the 3rd parameter, OPTION.
       'g', 's', 't' for cp932-to-unicode conversions.
       'g', 's', 'f' for unicode-to-cp932 conversions.

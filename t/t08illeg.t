@@ -1,5 +1,5 @@
 
-BEGIN { $| = 1; print "1..20\n"; }
+BEGIN { $| = 1; print "1..22\n"; }
 END {print "not ok 1\n" unless $loaded;}
 
 use ShiftJIS::CP932::MapUTF qw(:all);
@@ -69,6 +69,13 @@ print "\x82\x9f" eq utf8_to_cp932("\xE3\x81\xE3\x81\x81")
 
 print "\x00" eq utf8_to_cp932("\xFF\x81\x81\x00")
     ? "ok" : "not ok" , " ", ++$loaded, "\n";
+
+print "" eq utf8_to_cp932("\xF0\xAA\xB3\x9E\xF0")
+    ? "ok" : "not ok" , " ", ++$loaded, "\n";
+
+print "" eq utf8_to_cp932("\xC3\x80\xC3")
+    ? "ok" : "not ok" , " ", ++$loaded, "\n";
+
 
 #####
 

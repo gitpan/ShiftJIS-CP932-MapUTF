@@ -9,7 +9,7 @@ use vars qw(%CP932_UNI %UNI_CP932 %CP932_UTF8 %UTF8_CP932 %Fallback);
 require Exporter;
 @ISA = qw(Exporter);
 
-$VERSION = '0.32';
+$VERSION = '0.33';
 $PACKAGE = 'ShiftJIS::CP932::MapUTF'; # __PACKAGE__
 
 @EXPORT = (

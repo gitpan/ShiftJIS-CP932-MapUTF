@@ -1,4 +1,4 @@
-ShiftJIS::CP932::MapUTF version 0.32
+ShiftJIS::CP932::MapUTF version 0.33
 ================
 
 NAME
@@ -42,7 +42,7 @@ In addition, the XSUB edition supports the following functions
 
 DEPENDENCIES
 
-XSUB edition:     Perl 5.6.1 or later
+XSUB edition:   Perl 5.6.1 or later
 
 Non-XS edition: Perl 5.003 or later
                (Perl 5.005 or later Recommended)

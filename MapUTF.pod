@@ -108,7 +108,7 @@ Converts CP-932 to UTF-8.
 
 Converts CP-932 to Unicode.
 (Perl's internal format, flagged with C<SVf_UTF8>,
-see L<perlunicode>)
+see F<perlunicode>)
 
 B<This function is provided only for Perl 5.6.1 or later, and via XS.>
 
@@ -201,7 +201,7 @@ Converts UTF-8 to CP-932.
 
 Converts Unicode to CP-932.
 
-This B<Unicode> is coded in the Perl's internal format (see L<perlunicode>).
+This B<Unicode> is coded in the Perl's internal format (see F<perlunicode>).
 If not flagged with C<SVf_UTF8>, upgraded as an ISO 8859-1 (latin1) string.
 
 B<This function is provided only for Perl 5.6.1 or later, and via XS.>
@@ -257,15 +257,13 @@ on return values from C<SJIS_CALLBACK>...
 =head1 CAVEAT
 
 Pure Perl edition of this module doesn't understand
-any logically wide characters (see L<perlunicode>).
-Use C<utf8::decode>/C<utf8::encode> (see L<utf8>) on Perl 5.7 or later
+any logically wide characters (see F<perlunicode>).
+Use C<utf8::decode>/C<utf8::encode> (see F<utf8>) on Perl 5.7 or later
 if necessary.
 
 =head1 AUTHOR
 
-SADAHIRO, Tomoyuki
-
-  SADAHIRO@cpan.org
+SADAHIRO Tomoyuki <SADAHIRO@cpan.org>
 
   http://homepage1.nifty.com/nomenclator/perl/
 

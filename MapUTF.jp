@@ -1,5 +1,5 @@
 
-=head1 名前
+=head1 NAME (名前)
 
 ShiftJIS::CP932::MapUTF - Microsoft Windows CP-932 と Unicode との変換
 
@@ -104,7 +104,7 @@ CP-932 を UTF-8 に変換します。
 =item C<cp932_to_unicode([SJIS_CALLBACK,] STRING [, SJIS_OPTION])>
 
 CP-932 を Unicode に変換します。
-（C<SVf_UTF8> フラグ付きの Perlの内部形式, L<perlunicode> を参照。）
+（C<SVf_UTF8> フラグ付きの Perlの内部形式, F<perlunicode> を参照。）
 
 B<この関数は Perl 5.6.1 以降、かつ XS 版でのみ提供されます。>
 
@@ -198,7 +198,7 @@ UTF-8 を CP-932 に変換します。
 
 Unicode を CP-932 に変換します。
 
-この B<Unicode> は、Perl の内部形式（L<perlunicode> 参照）。
+この B<Unicode> は、Perl の内部形式（F<perlunicode> 参照）。
 C<SVf_UTF8> フラグ付きでない場合、ISO 8859-1 (latin1) 文字列として
 Unicode に upgrade されます。
 
@@ -254,13 +254,13 @@ B<要求されれば:>
 
 =head1 注意事項
 
-このモジュールの Pure Perl 版はワイド文字（L<perlunicode> を参照）を
+このモジュールの Pure Perl 版はワイド文字（F<perlunicode> を参照）を
 理解できません。必要なら、Perl 5.7 以降の
-C<utf8::decode>/C<utf8::encode>（L<utf8> を参照）を使ってください。
+C<utf8::decode>/C<utf8::encode>（F<utf8> を参照）を使ってください。
 
 =head1 作者
 
-SADAHIRO, Tomoyuki （貞廣 知行）
+SADAHIRO Tomoyuki （貞廣 知行）
 
   SADAHIRO@cpan.org
 
