@@ -1,9 +1,9 @@
-ShiftJIS::CP932::MapUTF version 0.04
+ShiftJIS::CP932::MapUTF version 0.05
 ================
 
 NAME
 
-ShiftJIS::CP932::MapUTF - converts between CP932 (Shift_JIS supported by MS) and unicode
+ShiftJIS::CP932::MapUTF - conversion between CP932 and unicode
 
 SYNOPSIS
 
@@ -31,7 +31,12 @@ To install this module type the following:
 
 DEPENDENCIES
 
-Perl 5.003 or later
+  Perl 5.003 or later
+
+CAVEAT
+
+This module doesn't understand any wide characters (see perlunicode).
+Use utf8::decode()/utf8::encode() on Perl 5.7 or later if necessary.
 
 COPYRIGHT AND LICENCE
 

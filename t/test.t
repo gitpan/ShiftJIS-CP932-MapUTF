@@ -10,7 +10,7 @@ use ShiftJIS::CP932::MapUTF;
 $loaded = 1;
 print "ok 1\n";
 
-sub normalize_cp932{
+sub normalize_cp932 {
   utf16_to_cp932(cp932_to_utf16(shift));
 }
 
@@ -31,12 +31,8 @@ print "\x42\x30\x44\x30\x46\x30\x48\x30\x4a\x30"
   eq cp932_to_utf16("\x82\xa0\x82\xa2\x82\xa4\x82\xa6\x82\xa8")
   ? "ok" : "not ok", " 4\n";
 
-my $utf8 = $] >= 5.006
-  ?   pack('U*', 0x6f22, 0x5b57) . "\n"
-    . pack('U*', 0x0050, 0x0065, 0x0072, 0x006c, 0x2252) . "\n"
-    . pack('U*', 0xFF8C, 0xFF9F, 0xFF9B, 0xFF78, 0xFF9E)
-    . pack('U*', 0xFF97, 0xFF90, 0xFF9D, 0xFF78, 0xFF9E) . "\n"
-  :   "\xe6\xbc\xa2\xe5\xad\x97\n\x50\x65\x72\x6c\xe2\x89\x92\n"
+my $utf8 = 
+      "\xe6\xbc\xa2\xe5\xad\x97\n\x50\x65\x72\x6c\xe2\x89\x92\n"
     . "\xEF\xBE\x8C\xEF\xBE\x9F\xEF\xBE\x9B\xEF\xBD\xB8"
     . "\xEF\xBE\x9E\xEF\xBE\x97\xEF\xBE\x90\xEF\xBE\x9D"
     . "\xEF\xBD\xB8\xEF\xBE\x9E\n";
@@ -71,16 +67,12 @@ foreach(keys %dbl){
 print !$NG ? "ok" : "not ok", " 7\n";
 
 my $vu_sjis = "abc\x82\xf2xyz";
-my $vu_utf8 = $] >= 5.006 
-  ? "abc".pack('U', 0x3094)."xyz"
-  : "abc\xE3\x82\x94xyz";
+my $vu_utf8 = "abc\xE3\x82\x94xyz";
 
 print $vu_utf8 eq cp932_to_utf8 (
-   sub {
-     $_[0] eq "\x82\xf2" ? 
-      $] >= 5.006 ? pack('U*', 0x3094) : pack('C*', 0xE3, 0x82, 0x94) : ""
-   },
+   sub { $_[0] eq "\x82\xf2" ? "\xE3\x82\x94" : "" },
    $vu_sjis)
+
   && "abc&#x3094;xyz" eq 
     utf8_to_cp932(sub {sprintf "&#x%04x;", shift}, $vu_utf8)
   ? "ok" : "not ok", " 8\n";
