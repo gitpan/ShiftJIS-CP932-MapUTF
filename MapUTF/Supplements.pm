@@ -12,7 +12,7 @@ require Exporter;
 @EXPORT = qw(to_cp932_supplements);
 @EXPORT_OK = qw(%Supplements);
 
-$VERSION = '0.11';
+$VERSION = '0.12';
 
 %Supplements = (
   0x00A2,	# CENT SIGN
@@ -103,7 +103,7 @@ ShiftJIS::CP932::MapUTF::Supplements - Supplemental Mapping from Unicode to Micr
 =head1 DESCRIPTION
 
 This module provides some supplemental mappings (fallbacks)
-from Unicode to CP-932.
+from Unicode to Windows CP-932.
 
 =over 4
 
@@ -117,12 +117,12 @@ e.g. C<to_cp932_supplements(0xA5)> returns C<"\x5C">.
 
 =back
 
-=head1 CAVEAT
+=head1 DISCLAIMER
 
 This module is an B<experimental> release.
 Propriety of mapping is not guaranteed.
-Any of these supplemental mappings may be added, modified, or removed
-in future.
+Any of these supplemental mappings
+may be added, modified, or removed in future.
 
 =head1 AUTHOR
 

@@ -12,12 +12,12 @@ require AutoLoader;
 @ISA = qw(Exporter DynaLoader);
 
 @EXPORT = qw(
-	cp932_to_unicode cp932_to_utf16le cp932_to_utf16be
-	unicode_to_cp932 utf16le_to_cp932 utf16be_to_cp932
+    cp932_to_unicode cp932_to_utf16le cp932_to_utf16be
+    unicode_to_cp932 utf16le_to_cp932 utf16be_to_cp932
 );
 @EXPORT_OK = ();
 
-$VERSION = '0.11';
+$VERSION = '0.12';
 
 bootstrap ShiftJIS::CP932::MapUTF $VERSION;
 
@@ -26,32 +26,33 @@ __END__
 
 =head1 NAME
 
-ShiftJIS::CP932::MapUTF - Conversion between Microsoft Windows CP-932 and Unicode
+ShiftJIS::CP932::MapUTF - conversion between Microsoft Windows CP-932 and Unicode
 
 =head1 SYNOPSIS
 
-  use ShiftJIS::CP932::MapUTF;
+    use ShiftJIS::CP932::MapUTF;
 
-  $unicode_string  = cp932_to_unicode($cp932_string);
+    $unicode_string  = cp932_to_unicode($cp932_string);
 
 =head1 DESCRIPTION
 
 The Microsoft Windows CodePage 932 (CP-932) table comprises 7915 characters:
 
-  JIS X 0201-1976 single-byte characters (191 characters),
-  JIS X 0208-1990 double-byte characters (6879 characters),
-  NEC special characters (83 characters from SJIS row 13),
-  NEC-selected IBM extended characters (374 characters from SJIS row 89 to 92),
-  and IBM extended characters (388 characters from SJIS row 115 to 119).
+    JIS X 0201-1997 single-byte characters (159 characters),
+    JIS X 0211-1994 single-byte characters (32 characters),
+    JIS X 0208-1997 double-byte characters (6879 characters),
+    NEC special characters (83 characters from SJIS row 13),
+    NEC-selected IBM extended characters (374 characters from SJIS row 89 to 92),
+    and IBM extended characters (388 characters from SJIS row 115 to 119).
 
 It contains duplicates that do not round trip
 map. These duplicates are due to the characters defined
 by vendors, NEC and IBM.
 
 For example, there are two characters that are mapped to U+2252,
-namely, 0x81e0 (JIS X 0208) and 0x8790 (NEC special character).
+namely, 0x81e0 (a JIS X 0208 character) and 0x8790 (an NEC special character).
 
-This module provides some functions to maps
+This module provides some functions to map
 from Windows CP-932 to Unicode, and vice versa. 
 
 =over 4
@@ -63,16 +64,14 @@ from Windows CP-932 to Unicode, and vice versa.
 Converts Windows CP-932 to Unicode
 (UTF-8/UTF-EBCDIC as a Unicode-oriented perl knows).
 
-For example, converts C<\x81\xe0> or C<\x87\x90> to C<U+2252>
-in the Unicode.
+For example, converts C<\x81\xe0> or C<\x87\x90> to C<U+2252> in Unicode.
 
 Characters unmapped to Unicode are deleted,
 if C<CODEREF> is not specified;
 otherwise, converted using the C<CODEREF>
 from the Windows CP-932 character string.
 
-For example, converts C<\x82\xf2> to C<U+3094>, C<HIRAGANA LETTER VU>,
-in the Unicode.
+For example, converts C<\x82\xf2> to C<U+3094>, C<HIRAGANA LETTER VU>, in Unicode.
 
    cp932_to_unicode(
        sub { $_[0] eq "\x82\xf2" ? "\x{3094}" : "" },
@@ -111,7 +110,7 @@ in the UTF-16LE encoding.
 
 =item C<unicode_to_cp932(CODEREF, STRING)>
 
-Converts Unicode (UTF-8/UTF-EBCDIC as a Unicode-oriented perl knows) 
+Converts Unicode (UTF-8/UTF-EBCDIC as a Unicode-oriented perl knows)
 to Windows CP-932 (normalized).
 
 For example, C<U+2252> in the Unicode is converted
@@ -119,10 +118,11 @@ to C<\x81\xe0>, not to C<\x87\x90>.
 
 Characters unmapped to Windows CP-932 are deleted,
 if C<CODEREF> is not specified;
-otherwise, converted using the C<CODEREF> from its Unicode codepoint (integer).
+otherwise, converted using the C<CODEREF>
+from its Unicode codepoint (integer).
 
-For example, characters unmapped to Windows CP-932 are 
-converted to numerical character references for HTML 4.01.
+For example, characters unmapped to Windows CP-932
+are converted to numerical character references for HTML 4.01.
 
     unicode_to_cp932(sub {sprintf "&#x%04x;", shift}, $unicode_string);
 
@@ -143,10 +143,11 @@ to C<\x81\xe0>, not to C<\x87\x90>.
 
 Characters unmapped to Windows CP-932 are deleted,
 if C<CODEREF> is not specified;
-otherwise, converted using the C<CODEREF> from its Unicode codepoint (integer).
+otherwise, converted using the C<CODEREF>
+from its Unicode codepoint (integer).
 
-For example, characters unmapped to Windows CP-932 are 
-converted to numerical character references for HTML 4.01.
+For example, characters unmapped to Windows CP-932
+are converted to numerical character references for HTML 4.01.
 
     utf16le_to_cp932(sub {sprintf "&#x%04x;", shift}, $utf16LE_string);
 
@@ -187,4 +188,3 @@ modify it under the same terms as Perl itself.
 =back
 
 =cut
-

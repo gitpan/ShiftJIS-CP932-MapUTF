@@ -1,5 +1,9 @@
 Revision history for Perl module ShiftJIS::CP932::MapUTF.
 
+0.12  Sun Apr 14 22:53:12 2002
+    - now uses utf8n_to_uvuni() instead of utf8n_to_uvchr().
+    - some doc fix.
+
 0.11  Sun Feb 10 17:07:22 2002
     - add ShiftJIS::CP932::MapUTF::Supplements (experimental).
 

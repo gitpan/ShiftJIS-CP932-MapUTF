@@ -19,9 +19,9 @@
 #endif /* uvuni_to_utf8 */ 
 
 /* Perl 5.6.1 ? */
-#ifndef utf8n_to_uvchr
-#define utf8n_to_uvchr  utf8_to_uv
-#endif /* utf8n_to_uvchr */ 
+#ifndef utf8n_to_uvuni
+#define utf8n_to_uvuni  utf8_to_uv
+#endif /* utf8n_to_uvuni */ 
 
 static void
 sv_cat_retcvref (SV *dst, SV *cv, SV *sv)
@@ -210,7 +210,7 @@ unicode_to_cp932 (arg1, arg2=0)
 
     if (cvref) {
 	for (p = s; p < e;) {
-	    uv = utf8n_to_uvchr(p, e - p, &retlen, 0);
+	    uv = utf8n_to_uvuni(p, e - p, &retlen, 0);
 	    p += retlen;
 	    t = tocp932_tbl[uv >> 8];
 	    j = t ? t[uv & 0xff] : 0;
@@ -233,7 +233,7 @@ unicode_to_cp932 (arg1, arg2=0)
     else {
 	d = (U8*)SvPVX(dst);
 	for (p = s; p < e;) {
-	    uv = utf8n_to_uvchr(p, e - p, &retlen, 0);
+	    uv = utf8n_to_uvuni(p, e - p, &retlen, 0);
 	    p += retlen;
 	    t = tocp932_tbl[uv >> 8];
 	    j = t ? t[uv & 0xff] : 0;
