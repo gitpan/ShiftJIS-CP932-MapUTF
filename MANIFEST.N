@@ -2,11 +2,11 @@ Changes
 Makefile.PL
 README
 MANIFEST
-MANIFEST.N
+MANIFEST.X
 MapUTF.pm
-MapUTF.pmN
+MapUTF.pmX
 MapUTF.pod
-MapUTF.xs
+MapUTF.xsX
 MapUTF/Supplements.pm
 mkheader
 scmuni.h

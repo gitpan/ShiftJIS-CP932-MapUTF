@@ -1,0 +1,196 @@
+
+=head1 NAME
+
+ShiftJIS::CP932::MapUTF - conversion between Microsoft Windows CP-932 and Unicode
+
+=head1 SYNOPSIS
+
+    use ShiftJIS::CP932::MapUTF qw(:all);
+
+    $utf8_string  = cp932_to_utf8($cp932_string);
+    $cp932_string = utf8_to_cp932($utf8_string);
+
+=head1 DESCRIPTION
+
+The Microsoft Windows CodePage 932 (CP-932) table comprises 7915 characters:
+
+    JIS X 0201:1997 single-byte characters (159 characters),
+    JIS X 0211:1994 single-byte characters (32 characters),
+    JIS X 0208:1997 double-byte characters (6879 characters),
+    NEC special characters (83 characters in SJIS row 13),
+    NEC-selected IBM extended characters (374 characters in SJIS rows 89..92),
+    and IBM extended characters (388 characters in SJIS rows 115..119).
+
+It contains duplicates that do not round trip
+map. These duplicates are due to the characters defined
+by vendors, NEC and IBM.
+For example, there are two characters that are mapped to U+2252;
+i.e., 0x81e0 (a JIS X 0208 character) and 0x8790 (an NEC special character).
+
+There are 398 non-round-trip mappings; i.e.
+7915 characters in CP-932 must be mapped to 7517 characters in Unicode.
+
+This module provides some functions to map properly
+from Windows CP-932 to Unicode, and vice versa.
+
+=head2 Functions to transcode CP-932 to Unicode
+
+If a coderef C<SJIS_FALLBACK> is not specified,
+characters unmapped to Unicode are deleted;
+otherwise, a string returned from C<SJIS_FALLBACK> is inserted there.
+The argument for B<SJIS_FALLBACK> is a CP-932 string like
+C<"\x80">, C<"\x82\xf2">, C<"\xfc\xfc">, C<"\xff">
+(that may be a byte that is illegal or a partial charcter).
+
+The return value of B<SJIS_FALLBACK> must be legal in the target format.
+E.g. never use with cp932_to_utf16be() a fallback that returns UTF-8.
+I.e. you should prepare a fallback coderef for each encoding.
+
+=over 4
+
+=item C<cp932_to_utf8(STRING)>
+
+=item C<cp932_to_utf8(SJIS_FALLBACK, STRING)>
+
+Converts Windows CP-932 to UTF-8
+
+=item C<cp932_to_unicode(STRING)>
+
+=item C<cp932_to_unicode(SJIS_FALLBACK, STRING)>
+
+Converts Windows CP-932 to Unicode
+(Perl's internal form (see perlunicode), flagged).
+
+B<This function is provided only for Perl 5.6.1 or later, and via XS.>
+
+=item C<cp932_to_utf16le([SJIS_FALLBACK,] STRING)>
+
+Converts Windows CP-932 to UTF-16LE.
+
+=item C<cp932_to_utf16be([SJIS_FALLBACK,] STRING)>
+
+Converts Windows CP-932 to UTF-16BE.
+
+=item C<cp932_to_utf32le([SJIS_FALLBACK,] STRING)>
+
+Converts Windows CP-932 to UTF-32LE.
+
+=item C<cp932_to_utf32be([SJIS_FALLBACK,] STRING)>
+
+Converts Windows CP-932 to UTF-32BE.
+
+=back
+
+=head2 Functions to transcode CP-932 from Unicode
+
+Any duplicates are normalized; e.g. C<U+2252> is converted
+to C<\x81\xe0>, not to C<\x87\x90>, in CP-932.
+
+If the C<UNICODE_FALLBACK> coderef is not specified,
+illegal bytes are skipped by one byte,
+and characters unmapped to Windows CP-932 are deleted;
+otherwise, a string returned from C<UNICODE_FALLBACK> is inserted there.
+
+The 1st argument for B<UNICODE_FALLBACK> is its Unicode codepoint (integer),
+or B<undef> when encounters an illegal byte.
+
+If the 1st argument is B<undef>, integer in byte is passed as the 2nd argument.
+ 
+For example, characters unmapped to Windows CP-932 are
+converted to numerical character references for HTML 4.01.
+
+    sub toHexNCR {
+        my ($char, $byte) = @_;
+        return sprintf("&#x%x;", $char) if defined $char;
+        die sprintf "illegal byte 0x%02x was found", $byte;
+    }
+
+    $cp932 = utf8_to_cp932(\&toHexNCR, $utf8_string);
+    $cp932 = unicode_to_cp932(\&toHexNCR, $unicode_string);
+    $cp932 = utf16le_to_cp932(\&toHexNCR, $utf16le_string);
+
+=over 4
+
+=item C<utf8_to_cp932(STRING)>
+
+=item C<utf8_to_cp932(UNICODE_FALLBACK, STRING)>
+
+Converts UTF-8 to Windows CP-932.
+
+=item C<unicode_to_cp932(STRING)>
+
+=item C<unicode_to_cp932(UNICODE_FALLBACK, STRING)>
+
+Converts Unicode to Windows CP-932.
+
+This B<Unicode> is the Perl's internal form (see perlunicode).
+If not flagged, upgraded as an ISO 8859-1 string).
+
+B<This function is provided only for Perl 5.6.1 or later, and via XS.>
+
+=item C<utf16le_to_cp932([UNICODE_FALLBACK,] STRING)>
+
+Converts UTF-16LE to Windows CP-932.
+
+=item C<utf16be_to_cp932([UNICODE_FALLBACK,] STRING)>
+
+Converts UTF-16BE to Windows CP-932.
+
+=item C<utf32le_to_cp932([UNICODE_FALLBACK,] STRING)>
+
+Converts UTF-32LE to Windows CP-932.
+
+=item C<utf32be_to_cp932([UNICODE_FALLBACK,] STRING)>
+
+Converts UTF-32BE to Windows CP-932.
+
+=back
+
+=head2 Export
+
+B<By default:>
+
+    cp932_to_utf8     utf8_to_cp932
+    cp932_to_utf16le  utf16le_to_cp932
+    cp932_to_utf16be  utf16be_to_cp932
+
+    cp932_to_unicode  unicode_to_cp932 (only for XS)
+
+B<On request:>
+
+    cp932_to_utf32le  utf32le_to_cp932
+    cp932_to_utf32be  utf32be_to_cp932
+
+=head1 CAVEAT
+
+Pure Perl version of this module doesn't understand
+any logically wide characters (see perlunicode).
+Use utf8::decode/utf8::encode (see utf8) on Perl 5.7 or later if necessary.
+
+=head1 AUTHOR
+
+Tomoyuki SADAHIRO
+
+  bqw10602@nifty.com
+  http://homepage1.nifty.com/nomenclator/perl/
+
+  Copyright(C) 2001-2002, SADAHIRO Tomoyuki. Japan. All rights reserved.
+
+This module is free software; you can redistribute it
+and/or modify it under the same terms as Perl itself.
+
+=head1 SEE ALSO
+
+=over 4
+
+=item Microsoft PRB, Article ID: Q170559
+
+Conversion Problem Between Shift-JIS and Unicode
+
+=item ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP932.TXT
+
+cp932 to Unicode table
+
+=back
+
+=cut

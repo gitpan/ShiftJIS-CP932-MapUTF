@@ -1,7 +1,5 @@
 package ShiftJIS::CP932::MapUTF::Supplements;
 
-require 5.006;
-
 use strict;
 use vars qw($VERSION @ISA @EXPORT @EXPORT_OK);
 use vars qw(%Supplements);
@@ -12,7 +10,7 @@ require Exporter;
 @EXPORT = qw(to_cp932_supplements);
 @EXPORT_OK = qw(%Supplements);
 
-$VERSION = '0.13';
+$VERSION = '0.20';
 
 %Supplements = (
   0x00A2,	# CENT SIGN
@@ -82,7 +80,7 @@ $VERSION = '0.13';
     "\xFB\x9F", # COMPATIBILITY IDEOGRAPH-FA20 // <-NFC
 );
 
-sub to_cp932_supplements { $Supplements{$_[0]} || '' }
+sub to_cp932_supplements { defined $_[0] && $Supplements{$_[0]} || '' }
 
 1;
 __END__
@@ -96,14 +94,17 @@ ShiftJIS::CP932::MapUTF::Supplements - Supplemental Mapping from Unicode to Micr
   use ShiftJIS::CP932::MapUTF;
   use ShiftJIS::CP932::MapUTF::Supplements;
 
-  $cp932_string  = unicode_to_cp932(\&to_cp932_supplements, $unicode_string);
-  $cp932_string  = utf16be_to_cp932(\&to_cp932_supplements, $utf16be_string);
+  $cp932_string  = utf8_to_cp932   (\&to_cp932_supplements, $utr8_string);
   $cp932_string  = utf16le_to_cp932(\&to_cp932_supplements, $utf16le_string);
+  $cp932_string  = utf16be_to_cp932(\&to_cp932_supplements, $utf16be_string);
+  $cp932_string  = utf32le_to_cp932(\&to_cp932_supplements, $utf32le_string);
+  $cp932_string  = utf32be_to_cp932(\&to_cp932_supplements, $utf32be_string);
+  $cp932_string  = unicode_to_cp932(\&to_cp932_supplements, $unicode_string);
 
 =head1 DESCRIPTION
 
 This module provides some supplemental mappings (fallbacks)
-from Unicode to Windows CP-932.
+from Unicode to Windows CP-932, via a coderef, the C<UNICODE_FALLBACK> handler.
 
 =over 4
 

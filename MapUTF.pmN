@@ -1,11 +1,248 @@
-#!perl
-
-use strict;
-use vars qw(%CP932_UNI %UNI_CP932);
+package ShiftJIS::CP932::MapUTF;
 
 use Carp;
+use strict;
+use vars qw($VERSION $PACKAGE @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
 
-foreach (qw/
+use vars qw(%CP932_UNI %UNI_CP932 %CP932_UTF8 %UTF8_CP932);
+
+require Exporter;
+@ISA = qw(Exporter);
+
+@EXPORT = (
+    'cp932_to_utf8',    'utf8_to_cp932',
+    'cp932_to_utf16le', 'utf16le_to_cp932',
+    'cp932_to_utf16be', 'utf16be_to_cp932',
+);
+
+%EXPORT_TAGS = (
+    'utf8'     => [ 'cp932_to_utf8',    'utf8_to_cp932'    ],
+    'utf16le'  => [ 'cp932_to_utf16le', 'utf16le_to_cp932' ],
+    'utf16be'  => [ 'cp932_to_utf16be', 'utf16be_to_cp932' ],
+    'utf32le'  => [ 'cp932_to_utf32le', 'utf32le_to_cp932' ],
+    'utf32be'  => [ 'cp932_to_utf32be', 'utf32be_to_cp932' ],
+);
+
+@EXPORT_OK = map @$_, values %EXPORT_TAGS;
+$EXPORT_TAGS{all}  = [ @EXPORT_OK ];
+
+$VERSION = '0.20';
+$PACKAGE = 'ShiftJIS::CP932::MapUTF'; # __PACKAGE__
+
+my $charSJIS = '(?:[\x81-\x9F\xE0-\xFC][\x40-\x7E\x80-\xFC]|[\x00-\xFF])';
+
+my $charUTF8 = 
+     '(?:[\x00-\x7F]|[\xC2-\xDF][\x80-\xBF]|'
+   . '\xE0[\xA0-\xBF][\x80-\xBF]|'
+   . '[\xE1-\xEF][\x80-\xBF][\x80-\xBF]|'
+   . '\xF0[\x90-\xBF][\x80-\xBF][\x80-\xBF]|'
+   . '[\xF1-\xF3][\x80-\xBF][\x80-\xBF][\x80-\xBF]|'
+   . '\xF4[\x80-\x8F][\x80-\xBF][\x80-\xBF])';
+
+my $charUTF16LE =
+   '(?:[\x00-\xFF][\xD8-\xDB][\x00-\xFF][\xDC-\xDF]|[\x00-\xFF][\x00-\xFF])';
+
+my $charUTF16BE =
+   '(?:[\xD8-\xDB][\x00-\xFF][\xDC-\xDF][\x00-\xFF]|[\x00-\xFF][\x00-\xFF])';
+
+my $charUTF32 = '(?:[\x00-\xFF]{4})';
+
+sub cp932_to_utf8 {
+    my $cv;
+    $cv = shift if ref $_[0] eq 'CODE';
+    my $str = shift;
+    $str =~ s/($charSJIS)/
+	exists $CP932_UTF8{$1}
+	    ? $CP932_UTF8{$1}
+	    : $cv ? &$cv($1) : '';
+	/geo;
+    return $str;
+}
+
+sub cp932_to_utf16le {
+    my $cv;
+    $cv = shift if ref $_[0] eq 'CODE';
+    my $str = shift;
+    $str =~ s/($charSJIS)/
+	exists $CP932_UNI{$1}
+	    ? pack('v', $CP932_UNI{$1})
+	    : $cv ? &$cv($1) : '';
+	/geo;
+    return $str;
+}
+
+sub cp932_to_utf16be {
+    my $cv;
+    $cv = shift if ref $_[0] eq 'CODE';
+    my $str = shift;
+    $str =~ s/($charSJIS)/
+	exists $CP932_UNI{$1}
+	    ? pack('n', $CP932_UNI{$1})
+	    : $cv ? &$cv($1) : '';
+	/geo;
+    return $str;
+}
+
+sub cp932_to_utf32le {
+    my $cv;
+    $cv = shift if ref $_[0] eq 'CODE';
+    my $str = shift;
+    $str =~ s/($charSJIS)/
+	exists $CP932_UNI{$1}
+	    ? pack('V', $CP932_UNI{$1})
+	    : $cv ? &$cv($1) : '';
+	/geo;
+    return $str;
+}
+
+sub cp932_to_utf32be {
+    my $cv;
+    $cv = shift if ref $_[0] eq 'CODE';
+    my $str = shift;
+    $str =~ s/($charSJIS)/
+	exists $CP932_UNI{$1}
+	    ? pack('N', $CP932_UNI{$1})
+	    : $cv ? &$cv($1) : '';
+	/geo;
+    return $str;
+}
+
+sub utf8_to_cp932 {
+    my $cv;
+    $cv = shift if ref $_[0] eq 'CODE';
+    my $str = shift;
+    $str =~ s/($charUTF8)|([\x00-\xFF])/
+	defined $1
+	    ? exists $UTF8_CP932{$1}
+		? $UTF8_CP932{$1}
+		: $cv ? &$cv(fromUTF8($1)) : ''
+	    : $cv ? &$cv(undef, ord $2) : ''
+	/geo;
+    return $str;
+}
+
+sub utf16le_to_cp932 {
+    my($cv, $u);
+    $cv = shift if ref $_[0] eq 'CODE';
+    my $str = shift;
+    $str =~ s/($charUTF16LE)|([\x00-\xFF])/
+	defined $1
+	    ? exists $UNI_CP932{$u = ordUTF16LE($1)}
+		? $UNI_CP932{$u}
+		: $cv ? &$cv($u) : ''
+	    : $cv ? &$cv(undef, ord $2) : ''
+      /geo;
+    return $str;
+}
+
+sub utf16be_to_cp932 {
+    my($cv, $u);
+    $cv = shift if ref $_[0] eq 'CODE';
+    my $str = shift;
+    $str =~ s/($charUTF16BE)|([\x00-\xFF])/
+	defined $1
+	    ? exists $UNI_CP932{$u = ordUTF16BE($1)}
+		? $UNI_CP932{$u}
+		: $cv ? &$cv($u) : ''
+	    : $cv ? &$cv(undef, ord $2) : ''
+      /geo;
+    return $str;
+}
+
+sub utf32le_to_cp932 {
+    my($cv, $u);
+    $cv = shift if ref $_[0] eq 'CODE';
+    my $str = shift;
+    $str =~ s/($charUTF32)|([\x00-\xFF])/
+	defined $1
+	    ? exists $UNI_CP932{$u = unpack('V', $1)}
+		? $UNI_CP932{$u}
+		: $cv ? &$cv($u) : ''
+	    : $cv ? &$cv(undef, ord $2) : ''
+      /geo;
+    return $str;
+}
+
+sub utf32be_to_cp932 {
+    my($cv, $u);
+    $cv = shift if ref $_[0] eq 'CODE';
+    my $str = shift;
+    $str =~ s/($charUTF32)|([\x00-\xFF])/
+	defined $1
+	    ? exists $UNI_CP932{$u = unpack('N', $1)}
+		? $UNI_CP932{$u}
+		: $cv ? &$cv($u) : ''
+	    : $cv ? &$cv(undef, ord $2) : ''
+      /geo;
+    return $str;
+}
+
+
+sub toUTF8 {
+  my $u = shift;
+
+  return
+    $u <  0x0080 ? chr($u) :
+    $u <  0x0800 ?
+ pack("CC",
+  ( ($u >>  6)         | 0xc0),
+  ( ($u        & 0x3f) | 0x80)
+ ) :
+    $u < 0x10000 ?
+ pack("CCC", 
+  ( ($u >> 12)         | 0xe0),
+  ((($u >>  6) & 0x3f) | 0x80),
+  ( ($u        & 0x3f) | 0x80)
+ ) :
+ pack("CCCC",
+  ( ($u >> 18)         | 0xf0),
+  ((($u >> 12) & 0x3f) | 0x80),
+  ((($u >>  6) & 0x3f) | 0x80),
+  ( ($u        & 0x3f) | 0x80)
+ );
+}
+
+sub fromUTF8 ($)
+{
+  my @c = unpack 'C*', shift;
+  return @c == 1 ? $c[0] : @c == 2
+    ? ((($c[0] & 0x1F)<<6)|($c[1] & 0x3F))
+    : @c == 3
+      ? ((($c[0] & 0x0F)<<12)|(($c[1] & 0x3F)<< 6)|($c[2] & 0x3F))
+      : @c == 4
+        ? ((($c[0] & 0x07)<<18)|(($c[1] & 0x3F)<<12)|
+          ( ($c[2] & 0x3F)<< 6)|( $c[3] & 0x3F))
+        : croak("$PACKAGE: invalid utf-8 in fromUTF8")
+}
+
+sub toUTF16 ($)
+{
+  my $n = shift;
+
+  return pack('v', $n) if $n < 0x10000;
+  $n -= 0x10000;
+  pack('vv', (($n >> 10) | 0xD800), (($n & 0x3FF) | 0xDC00));
+}
+
+sub ordUTF16LE {
+    my $h = shift;
+    return unpack('v', $h) if length $h == 2;
+    my($high, $low) = unpack("v*", $h);
+    $high &= 0x3FF;
+    $low  &= 0x3FF;
+    return 0x10000 + ($high << 10 | $low);
+}
+
+sub ordUTF16BE {
+    my $h = shift;
+    return unpack('n', $h) if length $h == 2;
+    my($high, $low) = unpack("n*", $h);
+    $high &= 0x3FF;
+    $low  &= 0x3FF;
+    return 0x10000 + ($high << 10 | $low);
+}
+
+foreach(qw/
 00-0000
 01-0001
 02-0002
@@ -7923,14 +8160,18 @@ FC4A-9E19-t
 FC4B-9ED1-t
 /){
   my @t = split /-/, $_, 3;
-  my $cp932 = hex $t[0];
-  my $uni   = hex $t[1];
+  $t[0] = hex $t[0];
+  $t[1] = hex $t[1];
+  my $cp932 = $t[0] > 0xFF ? pack('n', $t[0]) : chr($t[0]);
+  my $utf8  = toUTF8($t[1]);
 
-  if (!$t[2] or $t[2] eq 't'){
-    $CP932_UNI{$cp932} = $uni;
-    $UNI_CP932{$uni}   = $cp932;
+  if (!$t[2] or $t[2] eq 't') {
+    $CP932_UTF8{$cp932} = $utf8;
+    $CP932_UNI {$cp932} = $t[1];
+    $UTF8_CP932{$utf8}  = $UNI_CP932{$t[1]} = $cp932;
   } else {
-    $CP932_UNI{$cp932} = $uni;
+    $CP932_UTF8{$cp932} = $utf8;
+    $CP932_UNI {$cp932} = $t[1];
   }
 }
 
