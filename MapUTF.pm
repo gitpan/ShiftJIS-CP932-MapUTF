@@ -7,18 +7,16 @@ require Exporter;
 @ISA = qw(Exporter);
 @EXPORT = qw(cp932_to_utf8 cp932_to_utf16 utf8_to_cp932 utf16_to_cp932);
 
-$VERSION = '0.02';
+$VERSION = '0.03';
 
-my $Uchar =
-   '(?:\xEF\xBD[\xB3\xB6-\xBF]\xEF\xBE\x9E|'
- . '\xEF\xBE[\x80-\x84]\xEF\xBE\x9E|'
- . '\xEF\xBE[\x8A-\x8E]\xEF\xBE[\x9E\x9F]|'
- . '[\x00-\x7F]|[\xC2-\xDF][\x80-\xBF]|'
- . '\xE0[\xA0-\xBF][\x80-\xBF]|'
- . '[\xE1-\xEF][\x80-\xBF][\x80-\xBF]|'
- . '\xF0[\x90-\xBF][\x80-\xBF][\x80-\xBF]|'
- . '[\xF1-\xF3][\x80-\xBF][\x80-\xBF][\x80-\xBF]|'
- . '\xF4[\x80-\x8F][\x80-\xBF][\x80-\xBF])';
+my $Uchar = $] >= 5.007
+  ?  '(?m:.)'
+  :  '(?:[\x00-\x7F]|[\xC2-\xDF][\x80-\xBF]|'
+   . '\xE0[\xA0-\xBF][\x80-\xBF]|'
+   . '[\xE1-\xEF][\x80-\xBF][\x80-\xBF]|'
+   . '\xF0[\x90-\xBF][\x80-\xBF][\x80-\xBF]|'
+   . '[\xF1-\xF3][\x80-\xBF][\x80-\xBF][\x80-\xBF]|'
+   . '\xF4[\x80-\x8F][\x80-\xBF][\x80-\xBF])';
 
 my $Schar = '(?:[\x81-\x9F\xE0-\xFC][\x00-\xFF]|[\x00-\xFF])';
 
@@ -7946,36 +7944,44 @@ foreach(qw/
   my $utf16 = pack('v',$t[1]);
   my $utf8  = pack_U($t[1]);
   if(!$t[2] or $t[2] eq 't'){
-    $CP932_UTF16{$cp932} = $utf16;
-    $UTF16_CP932{$utf16} = $cp932;
     $CP932_UTF8{$cp932}  = $utf8;
-    $UTF8_CP932{$utf8}   = $cp932;
+    $CP932_UTF16{$cp932} = $utf16;
+    $UTF8_CP932{$utf8} = $UTF16_CP932{$utf16} = $cp932;
   } else {
     $CP932_UTF8{$cp932}  = $utf8;
     $CP932_UTF16{$cp932} = $utf16;
   }
 }
 
+$UTF16_CP932{"\xFF\xFE"} = '';
+
 sub pack_U {
   my $n = shift;
   return
-    $n < 128
-	? chr($n)
-    : $n < 2048
-	? pack("CC", 192 + $n / 64, 128 + $n % 64)
-    : pack("CCC", 224+$n/4096, 128+($n%4096)/64, 128+$n%64);
+    $] >= 5.006
+    ? pack('U', $n)
+    :
+ $n < 128
+        ? chr($n)
+      : $n < 2048
+        ? pack("CC", 192 + $n / 64, 128 + $n % 64)
+      : pack("CCC", 224+$n/4096, 128+($n%4096)/64, 128+$n%64);
 }
 
 sub unpack_U {
-  my @c = unpack 'C*', shift;
-  @c == 1
-	? $c[0]
-  : @c == 2
-	? ((($c[0] & 0x1F)<<6)|($c[1] & 0x3F))
-  : @c == 3
-	? ((($c[0] & 0x0F)<<12)|(($c[1] & 0x3F)<<6)|($c[2] & 0x3F))
-  : ((($c[0] & 0x07)<<18)|(($c[1] & 0x3F)<<12)|
-	(($c[2] & 0x3F)<<6)|($c[3] & 0x3F))
+   $] >= 5.006
+   ? unpack('U', shift)
+   : do {
+    my @c = unpack 'C*', shift;
+    @c == 1
+      ? $c[0]
+      : @c == 2
+        ? ((($c[0] & 0x1F)<<6)|($c[1] & 0x3F))
+        : @c == 3
+          ? ((($c[0] & 0x0F)<<12)|(($c[1] & 0x3F)<<6)|($c[2] & 0x3F))
+          : ((($c[0] & 0x07)<<18)|(($c[1] & 0x3F)<<12)|
+            (($c[2] & 0x3F)<<6)|($c[3] & 0x3F))
+   }
 }
 
 sub cp932_to_utf8 {
@@ -7984,7 +7990,8 @@ sub cp932_to_utf8 {
   my $str = shift;
   defined $coderef
     ? $str =~ s/($Schar)/
-	exists $CP932_UTF8{$1}  ? $CP932_UTF8{$1}  : &$coderef($1)/geo
+        exists $CP932_UTF8{$1} ? $CP932_UTF8{$1} : &$coderef($1)
+      /geo
     : $str =~ s/($Schar)/$CP932_UTF8{$1}/go;
   return $str;
 }
@@ -7995,7 +8002,8 @@ sub cp932_to_utf16 {
   my $str = shift;
   defined $coderef
     ? $str =~ s/($Schar)/
-	exists $CP932_UTF16{$1}  ? $CP932_UTF16{$1} : &$coderef($1)/geo
+        exists $CP932_UTF16{$1} ? $CP932_UTF16{$1} : &$coderef($1)
+      /geo
     : $str =~ s/($Schar)/$CP932_UTF16{$1}/go;
   return $str;
 }
@@ -8006,9 +8014,8 @@ sub utf8_to_cp932 {
   my $str = shift;
   defined $coderef
     ? $str =~ s/($Uchar)/
-	exists $UTF8_CP932{$1}
-		? $UTF8_CP932{$1}
-		: &$coderef(unpack_U($1))/geo
+        exists $UTF8_CP932{$1} ? $UTF8_CP932{$1} : &$coderef(unpack_U($1))
+      /geo
     : $str =~ s/($Uchar)/$UTF8_CP932{$1}/go;
   return $str;
 }
@@ -8019,9 +8026,8 @@ sub utf16_to_cp932 {
   my $str = shift;
   defined $coderef
     ? $str =~ s/([\x00-\xFF]{2})/
-	exists $UTF16_CP932{$1}
-		? $UTF16_CP932{$1}
-		: &$coderef(unpack('v',$1))/geo
+        exists $UTF16_CP932{$1} ? $UTF16_CP932{$1} : &$coderef(unpack('v',$1))
+      /geo
     : $str =~ s/([\x00-\xFF]{2})/$UTF16_CP932{$1}/go;
   return $str;
 }
@@ -8119,9 +8125,9 @@ If C<CODEREF> is specified, characters that aren't mapped to CP-932
 are converted using C<CODEREF> from its Unicode code point (integer).
 
 For example, characters that aren't mapped to CP-932 are 
-converted to numerical character reference for HTML 4.01.
+converted to numerical character references for HTML 4.01.
 
-  utf8_to_cp932(sub {sprintf "&#%04x;", shift}, $utf8_string);
+  utf8_to_cp932(sub {sprintf "&#x%04x;", shift}, $utf8_string);
 
 =item C<utf16_to_cp932(STRING)>
 
@@ -8138,9 +8144,9 @@ If C<CODEREF> is specified, characters that aren't mapped to CP-932
 are converted using C<CODEREF> from its Unicode code point (integer).
 
 For example, characters that aren't mapped to CP-932 are 
-converted to numerical character reference for HTML 4.01.
+converted to numerical character references for HTML 4.01.
 
-  utf16_to_cp932(sub {sprintf "&#%04x;", shift}, $utf16LE_string);
+  utf16_to_cp932(sub {sprintf "&#x%04x;", shift}, $utf16LE_string);
 
 =back
 

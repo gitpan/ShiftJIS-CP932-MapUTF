@@ -1,4 +1,4 @@
-ShiftJIS::CP932::MapUTF version 0.02
+ShiftJIS::CP932::MapUTF version 0.03
 ================
 
 NAME
@@ -13,7 +13,7 @@ SYNOPSIS
 
 DESCRIPTION
 
-This module provides following functions:
+This module provides the following functions:
 
   cp932_to_utf8   converts CP932 to UTF-8
   cp932_to_utf16  converts CP932 to UTF-16LE
@@ -31,7 +31,7 @@ To install this module type the following:
 
 DEPENDENCIES
 
-perl.
+Perl 5.003 or later
 
 COPYRIGHT AND LICENCE
 
