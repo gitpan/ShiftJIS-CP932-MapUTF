@@ -15,6 +15,11 @@
 #define Is_CP932DBC(p)   (Is_CP932LED(*(p)) && Is_CP932TRL((p)[1]))
 #define Is_CP932MBLEN(p) (Is_CP932DBC(p) ? 2 : 1)
 
+#define MaxLenToUni UNISKIP(0xff71)
+#define MaxLenToU16 (2)
+#define MaxLenFmUni (1)
+#define MaxLenFmU16 (1)
+
 /* Perl 5.6.1 ? */
 #ifndef uvuni_to_utf8
 #define uvuni_to_utf8   uv_to_utf8
@@ -58,8 +63,6 @@ cp932_to_unicode (arg1, arg2=0)
   PREINIT:
     SV *src, *dst, *cvref;
     STRLEN srclen, dstlen, mblen;
-    STRLEN maxlen = 3;
-	/* ASCII: 1 to 1; kana: 1 to 3|4; Greak: 2 to 2; Kanji: 2 to 3|4 */
     U8 *s, *e, *p, *d, uni[UTF8_MAXLEN + 1];
     UV uv;
     struct leading lb;
@@ -71,12 +74,10 @@ cp932_to_unicode (arg1, arg2=0)
 	else
 	    croak(PkgName " 1st argument is not CODEREF");
 
-    maxlen = UNISKIP(0xff71); /* 3 or 4; HALFWIDTH KATAKANA LETTER A */
-
     src = cvref ? arg2 : arg1;
     s = (U8*)SvPV(src,srclen);
     e = s + srclen;
-    dstlen = srclen * maxlen + 1;
+    dstlen = srclen * MaxLenToUni + 1;
 
     dst = newSV(dstlen);
     (void)SvPOK_only(dst);
@@ -120,7 +121,6 @@ cp932_to_utf16le (arg1, arg2=0)
   PREINIT:
     SV *src, *dst, *cvref;
     STRLEN srclen, dstlen, mblen;
-    STRLEN maxlen = 2; /* X0201 : 1 to 2; X0208 : 2 to 2 */
     U8 *s, *e, *p, *d, ucs[3];
     UV uv;
     struct leading lb;
@@ -135,7 +135,7 @@ cp932_to_utf16le (arg1, arg2=0)
     src = cvref ? arg2 : arg1;
     s = (U8*)SvPV(src,srclen);
     e = s + srclen;
-    dstlen = srclen * maxlen + 1;
+    dstlen = srclen * MaxLenToU16 + 1;
 
     dst = newSV(dstlen);
     (void)SvPOK_only(dst);
@@ -182,9 +182,6 @@ unicode_to_cp932 (arg1, arg2=0)
   PREINIT:
     SV *src, *dst, *cvref;
     STRLEN srclen, dstlen, retlen;
-    STRLEN maxlen = 1; 
-	/* ASCII: 1 to 1; @latin1: 1 to 2; but upgrade() grows it.@
-	   kana: 3|4 to 1; Greek:  2 to 2; Kanji: 3|4 to 2 */
     U8 *s, *e, *p, *d, mbc[3];
     U16 j, *t;
     UV uv;
@@ -204,7 +201,7 @@ unicode_to_cp932 (arg1, arg2=0)
 
     s = (U8*)SvPV(src,srclen);
     e = s + srclen;
-    dstlen = srclen * maxlen + 1;
+    dstlen = srclen * MaxLenFmUni + 1;
 
     dst = newSV(dstlen);
     (void)SvPOK_only(dst);
@@ -213,7 +210,7 @@ unicode_to_cp932 (arg1, arg2=0)
 	for (p = s; p < e;) {
 	    uv = utf8n_to_uvuni(p, e - p, &retlen, 0);
 	    p += retlen;
-	    t = tocp932_tbl[uv >> 8];
+	    t = uv < 0x10000 ? tocp932_tbl[uv >> 8] : NULL;
 	    j = t ? t[uv & 0xff] : 0;
 
 	    if (j || !uv) {
@@ -236,7 +233,7 @@ unicode_to_cp932 (arg1, arg2=0)
 	for (p = s; p < e;) {
 	    uv = utf8n_to_uvuni(p, e - p, &retlen, 0);
 	    p += retlen;
-	    t = tocp932_tbl[uv >> 8];
+	    t = uv < 0x10000 ? tocp932_tbl[uv >> 8] : NULL;
 	    j = t ? t[uv & 0xff] : 0;
 	    if (j || !uv) {
 		if (j >= 256)
@@ -260,7 +257,6 @@ utf16le_to_cp932 (arg1, arg2=0)
   PREINIT:
     SV *src, *dst, *cvref;
     STRLEN srclen, dstlen;
-    STRLEN maxlen = 1; /* X0201 : 2 to 1; X0208 : 2 to 2 */
     U8 *s, *e, *p, *d, row, cell, mbc[3];
     U16 j, *t;
     UV uv, luv;
@@ -275,7 +271,7 @@ utf16le_to_cp932 (arg1, arg2=0)
     src = cvref ? arg2 : arg1;
     s = (U8*)SvPV(src,srclen);
     e = s + srclen;
-    dstlen = srclen * maxlen + 1;
+    dstlen = srclen * MaxLenFmU16 + 1;
 
     dst = newSV(dstlen);
     (void)SvPOK_only(dst);

@@ -17,7 +17,7 @@ require AutoLoader;
 );
 @EXPORT_OK = ();
 
-$VERSION = '0.13';
+$VERSION = '0.14';
 
 bootstrap ShiftJIS::CP932::MapUTF $VERSION;
 
@@ -32,7 +32,8 @@ ShiftJIS::CP932::MapUTF - conversion between Microsoft Windows CP-932 and Unicod
 
     use ShiftJIS::CP932::MapUTF;
 
-    $unicode_string  = cp932_to_unicode($cp932_string);
+    $unicode_string = cp932_to_unicode($cp932_string);
+    $cp932_string   = unicode_to_cp932($unicode_string);
 
 =head1 DESCRIPTION
 

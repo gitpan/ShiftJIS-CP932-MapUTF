@@ -3,7 +3,7 @@
 
 ######################### We start with some black magic to print on failure.
 
-BEGIN { $| = 1; print "1..17\n"; }
+BEGIN { $| = 1; print "1..19\n"; }
 END {print "not ok 1\n" unless $loaded;}
 
 use ShiftJIS::CP932::MapUTF;
@@ -133,8 +133,8 @@ print "\x{ff71}\x{ff72}\x{ff73}\x{ff74}\x{ff75}" x $repeat eq
   cp932_to_unicode("\xb1\xb2\xb3\xb4\xb5" x $repeat) # han-kana
   ? "ok" : "not ok", " 13\n";
 
-print "&#x00ff;\x81\x93\x83\xbf&#xacde;" x $repeat eq
-  unicode_to_cp932(\&hexNCR, "\x{ff}\x{ff05}\x{03B1}\x{acde}" x $repeat)
+print "&#x00ff;\x81\x93\x83\xbf&#x2acde;" x $repeat eq
+  unicode_to_cp932(\&hexNCR, "\x{ff}\x{ff05}\x{03B1}\x{2acde}" x $repeat)
   ? "ok" : "not ok", " 14\n";
 
 print "\x81\x4c\x81\x4e\x81\x7d\x81\x7e\x81\x80" x $repeat eq
@@ -150,3 +150,9 @@ print "HIRAGANA LETTER VU" x $repeat eq
   cp932_to_utf16be($code_vn, "\x82\xf2" x $repeat)
   ? "ok" : "not ok", " 17\n";
 
+print "ABCD" eq unicode_to_cp932("A\x{E0001}B\x{10000}C\x{100000}D")
+  ? "ok" : "not ok", " 18\n";
+
+print unicode_to_cp932(sub { sprintf "&#x%04X;", shift },
+    "A\x{E0001}B\x{10ABCD}C\x{10000}D") eq "A&#xE0001;B&#x10ABCD;C&#x10000;D"
+  ? "ok" : "not ok", " 19\n";
