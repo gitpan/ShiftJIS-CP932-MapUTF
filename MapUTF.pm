@@ -7,10 +7,10 @@ require Exporter;
 @ISA = qw(Exporter);
 @EXPORT = qw(cp932_to_utf8 cp932_to_utf16 utf8_to_cp932 utf16_to_cp932);
 
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 my $Uchar = $] >= 5.007
-  ?  '(?m:.)'
+  ?  '(?s:.)'
   :  '(?:[\x00-\x7F]|[\xC2-\xDF][\x80-\xBF]|'
    . '\xE0[\xA0-\xBF][\x80-\xBF]|'
    . '[\xE1-\xEF][\x80-\xBF][\x80-\xBF]|'
@@ -8037,8 +8037,7 @@ __END__
 
 =head1 NAME
 
-ShiftJIS::CP932::MapUTF - Converts between CP-932
-(Shift_JIS supported by MS) and unicode
+ShiftJIS::CP932::MapUTF - Converts between CP-932 (Shift_JIS supported by MS) and unicode
 
 =head1 SYNOPSIS
 
@@ -8176,6 +8175,10 @@ Microsoft PRB: Conversion Problem Between Shift-JIS and Unicode
 Unicode.org
 
 ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP932.TXT
+
+=item 3
+
+L<ShiftJIS::CP932::Correct>
 
 =back
 

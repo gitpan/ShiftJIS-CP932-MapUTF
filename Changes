@@ -1,5 +1,8 @@
 Revision history for Perl module ShiftJIS::CP932::MapUTF.
 
+0.04  Sat Sep 08 12:11:15 2001
+    - modify test.t: Perl 5.005 warns against '\x{hhhh}'.
+
 0.03  Thu Sep 06 22:15:21 2001
     - fix: wrong utf8 regex.
 

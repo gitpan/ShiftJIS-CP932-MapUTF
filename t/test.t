@@ -18,9 +18,11 @@ sub normalize_cp932{
 
 print "" eq cp932_to_utf16("")
   && "A\x00B\x00C\x00" eq cp932_to_utf16("ABC")
+  && "A\x00B\x00C\x00\n\x00" eq cp932_to_utf16("ABC\n")
   ? "ok" : "not ok", " 2\n";
 
-print "" eq utf16_to_cp932("")
+print "" eq utf16_to_cp932("") 
+  && "\n\n" eq utf16_to_cp932("\n\x00\n\x00")
   && "\x82\xa0\x82\xa2\x82\xa4\x81\xe0\x82\xa6\x82\xa8"
   eq utf16_to_cp932("\xff\xfe\x42\x30\x44\x30\x46\x30\x52\x22\x48\x30\x4a\x30")
   ? "ok" : "not ok", " 3\n";
@@ -30,9 +32,10 @@ print "\x42\x30\x44\x30\x46\x30\x48\x30\x4a\x30"
   ? "ok" : "not ok", " 4\n";
 
 my $utf8 = $] >= 5.006
-  ?   "\x{6f22}\x{5b57}\n\x{0050}\x{0065}\x{0072}\x{006c}\x{2252}\n"
-    . "\x{FF8C}\x{FF9F}\x{FF9B}\x{FF78}\x{FF9E}"
-    . "\x{FF97}\x{FF90}\x{FF9D}\x{FF78}\x{FF9E}\n"
+  ?   pack('U*', 0x6f22, 0x5b57) . "\n"
+    . pack('U*', 0x0050, 0x0065, 0x0072, 0x006c, 0x2252) . "\n"
+    . pack('U*', 0xFF8C, 0xFF9F, 0xFF9B, 0xFF78, 0xFF9E)
+    . pack('U*', 0xFF97, 0xFF90, 0xFF9D, 0xFF78, 0xFF9E) . "\n"
   :   "\xe6\xbc\xa2\xe5\xad\x97\n\x50\x65\x72\x6c\xe2\x89\x92\n"
     . "\xEF\xBE\x8C\xEF\xBE\x9F\xEF\xBE\x9B\xEF\xBD\xB8"
     . "\xEF\xBE\x9E\xEF\xBE\x97\xEF\xBE\x90\xEF\xBE\x9D"
@@ -42,11 +45,15 @@ my $cp932 = "\x8a\xbf\x8e\x9a\n\x50\x65\x72\x6c\x81\xe0\n"
     . "\xcc\xdf\xdb\xb8\xde\xd7\xd0\xdd\xb8\xde\n";
 
 print "" eq utf8_to_cp932("")
+  && "\n\n" eq utf8_to_cp932("\n\n")
   && $cp932 eq utf8_to_cp932($utf8)
+  && $cp932."\n" eq utf8_to_cp932($utf8."\n")
   ? "ok" : "not ok", " 5\n";
 
 print "" eq cp932_to_utf8("")
+  && "\n\n" eq cp932_to_utf8("\n\n")
   && $utf8 eq cp932_to_utf8($cp932)
+  && $utf8."\n" eq cp932_to_utf8($cp932."\n")
   ? "ok" : "not ok", " 6\n";
 
 my($NG);
@@ -64,12 +71,14 @@ foreach(keys %dbl){
 print !$NG ? "ok" : "not ok", " 7\n";
 
 my $vu_sjis = "abc\x82\xf2xyz";
-my $vu_utf8 = $] >= 5.006 ? "abc\x{3094}xyz" : "abc\xE3\x82\x94xyz";
+my $vu_utf8 = $] >= 5.006 
+  ? "abc".pack('U', 0x3094)."xyz"
+  : "abc\xE3\x82\x94xyz";
 
 print $vu_utf8 eq cp932_to_utf8 (
    sub {
      $_[0] eq "\x82\xf2" ? 
-      $] >= 5.006 ? "\x{3094}" : "\xE3\x82\x94" : ""
+      $] >= 5.006 ? pack('U*', 0x3094) : pack('C*', 0xE3, 0x82, 0x94) : ""
    },
    $vu_sjis)
   && "abc&#x3094;xyz" eq 
