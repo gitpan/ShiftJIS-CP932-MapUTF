@@ -1,7 +1,7 @@
 
 =head1 NAME
 
-ShiftJIS::CP932::MapUTF - conversion between Microsoft Windows CP-932 and Unicode
+ShiftJIS::CP932::MapUTF - transcode between Microsoft CP932 and Unicode
 
 =head1 SYNOPSIS
 
@@ -14,8 +14,8 @@ ShiftJIS::CP932::MapUTF - conversion between Microsoft Windows CP-932 and Unicod
 
 The table of Microsoft Windows CodePage 932 (CP-932) comprises 7915 characters:
 
-    JIS X 0201/0211 single-byte characters (191 characters),
-    JIS X 0211 double-byte characters (6879 characters),
+    JIS X 0201 single-byte characters (191 characters),
+    JIS X 0208 double-byte characters (6879 characters),
     NEC special characters (83 characters, row 13),
     NEC-selected IBM extended characters (374 characters, rows 89..92),
     and IBM extended characters (388 characters, rows 115..119).
@@ -30,7 +30,7 @@ and C<0x8790> (an NEC special character).
 
 Actually, 7915 characters in CP-932 must be
 mapped to 7517 characters in Unicode.
-There are 398 non-round-trip mappings; i.e.
+There are 398 non-round-trip mappings.
 
 This module provides some functions to convert properly
 from CP-932 to Unicode, and vice versa.
@@ -265,12 +265,10 @@ if necessary.
 
 SADAHIRO Tomoyuki <SADAHIRO@cpan.org>
 
-  http://homepage1.nifty.com/nomenclator/perl/
+Copyright(C) 2001-2005, SADAHIRO Tomoyuki. Japan. All rights reserved.
 
-  Copyright(C) 2001-2003, SADAHIRO Tomoyuki. Japan. All rights reserved.
-
-This module is free software; you can redistribute it
-and/or modify it under the same terms as Perl itself.
+This module is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
 
 =head1 SEE ALSO
 
@@ -287,10 +285,6 @@ http://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP932.TXT
 http://www.microsoft.com/typography/unicode/932.txt (dead link)
 
 http://www.microsoft.com/globaldev/reference/dbcs/932.htm
-
-http://oss.software.ibm.com/cvs/icu/charset/data/xml/windows-932-2000.xml
-
-http://oss.software.ibm.com/cvs/icu/charset/data/ucm/windows-932-2000.ucm
 
 =back
 

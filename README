@@ -1,9 +1,9 @@
-ShiftJIS::CP932::MapUTF version 0.34
+ShiftJIS::CP932::MapUTF version 0.40
 ================
 
 NAME
 
-ShiftJIS::CP932::MapUTF - Conversion between Microsoft CP932 and Unicode
+ShiftJIS::CP932::MapUTF - transcode between Microsoft CP932 and Unicode
 
 SYNOPSIS
 
@@ -90,14 +90,11 @@ Note:
     in this distribution (it must be renamed MapUTF.pm, though)
   * Tests (in t/*.t files) require MapUTF/Supplements.pm, too.
 
-COPYRIGHT AND LICENCE
+COPYRIGHT AND LICENSE
 
-    SADAHIRO Tomoyuki <SADAHIRO@cpan.org>
+SADAHIRO Tomoyuki <SADAHIRO@cpan.org>
 
-        http://homepage1.nifty.com/nomenclator/perl/
+Copyright(C) 2001-2005, SADAHIRO Tomoyuki. Japan. All rights reserved.
 
-    Copyright(C) 2001-2003, SADAHIRO Tomoyuki. Japan. All rights reserved.
-
-    This module is free software; you can redistribute it
-    and/or modify it under the same terms as Perl itself.
-
+This module is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself. 

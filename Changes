@@ -1,5 +1,11 @@
 Revision history for Perl module ShiftJIS::CP932::MapUTF.
 
+1.00  Sun Mar 13 16:45:32 2005
+    - META.yml is added.
+    - Japanese POD named JAPANESE is added (again).
+    - UTF-8 strings to be compared are encoded without the help
+      of perl's "utf8" in t10heavy.t.
+
 0.34  Sat Oct 18 12:22:31 2003
     - removed JP pod.
 
@@ -65,7 +71,7 @@ Revision history for Perl module ShiftJIS::CP932::MapUTF.
 
 0.08  Sun Jan 20 10:26:38 2002
     - now understands wide characters;
-      but only works on Unicode-oriented Perl (i.e. Perl 5.6 or later).
+      but only works on Unicode aware Perl (i.e. Perl 5.6 or later).
 
 0.07  Sun Oct 20 14:35:03 2001 (not released)
     - unpaired surrogate.

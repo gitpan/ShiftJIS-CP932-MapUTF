@@ -10,7 +10,7 @@ require Exporter;
 @EXPORT = qw(to_cp932_supplements);
 @EXPORT_OK = qw(%Supplements);
 
-$VERSION = '0.31';
+$VERSION = '1.00';
 
 %Supplements = (
   0x00A2,	# CENT SIGN
@@ -129,13 +129,9 @@ may be added, modified, or removed in future.
 
 =head1 AUTHOR
 
-SADAHIRO Tomoyuki
+SADAHIRO Tomoyuki <SADAHIRO@cpan.org>
 
-  SADAHIRO@cpan.org
-
-  http://homepage1.nifty.com/nomenclator/perl/
-
-  Copyright(C) 2001-2003, SADAHIRO Tomoyuki. Japan. All rights reserved.
+Copyright(C) 2001-2005, SADAHIRO Tomoyuki. Japan. All rights reserved.
 
 This module is free software; you can redistribute it
 and/or modify it under the same terms as Perl itself.

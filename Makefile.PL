@@ -17,6 +17,14 @@ if (-f "MapUTF.xs") {
 WriteMakefile(
     'NAME'		=> 'ShiftJIS::CP932::MapUTF',
     'VERSION_FROM'	=> 'MapUTF.pm',
-    clean => $clean,
+    'clean'		=> $clean,
+    'PREREQ_PM'	  	=> {
+	Carp		=> 0,
+	DynaLoader	=> 0,
+	Exporter	=> 0,
+	File::Copy	=> 0,
+	strict		=> 0,
+	vars		=> 0,
+    },
 );
 
