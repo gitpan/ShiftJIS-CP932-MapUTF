@@ -1,6 +1,10 @@
 Revision history for Perl module ShiftJIS::CP932::MapUTF.
 
-0.30  Sun May 05 11:12:21 2003
+0.31  Sun May 04 22:48:10 2003
+    - doc tweaks and detypos.
+    - removed double-byte characters from MapUTF.pod.
+
+0.30  Sun May 04 11:12:21 2003
     - clarified and documented on some ambiguous behaviors.
     - added the 3rd parameter, OPTION.
       'g', 's', 't' for cp932-to-unicode conversions.

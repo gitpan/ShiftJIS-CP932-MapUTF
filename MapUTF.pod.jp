@@ -15,12 +15,11 @@ ShiftJIS::CP932::MapUTF - Microsoft Windows CP-932 と Unicode との変換
 マイクロソフトウィンドウズ (Microsoft Windows) コードページ 932 (CP-932)
 のテーブルは 7915 文字からなります。
 
-    JIS X 0201 一バイト図形文字（159 文字）
-    JIS X 0211 一バイト制御文字（32 文字）
-    JIS X 0208 二バイト図形文字（6879 文字）
-    NEC 特殊文字（83 文字、13区）
-    NEC-選定 IBM 拡張文字（374 文字、89～92区）
-    IBM 拡張文字（388 文字、115～119区）
+    JIS X 0201/0211 一バイト文字（191 文字）
+    JIS X 0208 二バイト文字（6879 文字）
+    NEC特殊文字（83 文字、13区）
+    NEC選定IBM拡張文字（374 文字、89～92区）
+    IBM拡張文字（388 文字、115～119区）
 
 この表は、往復変換できない二重定義文字を含んでいます。
 これらの二重定義文字はベンダー（NEC および IBM）定義の拡張文字のためです。
@@ -35,7 +34,7 @@ Unicode から CP-932 に、適切に変換する関数を提供します。
 
 =head2 CP-932 から Unicode への変換
 
-第一引数がレファレンスの場合、それは C<SJIS_CALLBACK> として
+第一引数がレファレンスの場合、それは C<SJIS_CALLBACK> として、
 Unicode への対応がない CP-932 文字の処理に用いられます。
 (C<STRING> にレファレンスを与えることはできません。)
 
@@ -46,16 +45,23 @@ C<SJIS_CALLBACK> が与えられている場合、
 もし C<SJIS_CALLBACK> が与えられていない場合、
 Unicode への対応がない CP-932 文字は黙って削除され、
 部分文字は一バイト分跳ばされます。
+C<SJIS_CALLBACK> として、常に空文字列を返す
+コードリファレンス (C<sub {''}>) が渡されたかのように動作します。
 
 今のところ、C<SJIS_CALLBACK> としては、
 コードリファレンスのみが使えます。
-コードリファレンスの返り値が未対応文字の代わりに挿入されます。
+コードリファレンスの返り値がマッピングのない文字の代わりに挿入されます。
 
 コードリファレンス C<SJIS_CALLBACK> は、一個以上の引数とともに
-呼び出されます。
-未対応文字が部分的な文字（二バイト文字の第一バイトのみのバイト）の場合、
-第一引数は未定義値になり、第二引数はバイトを表す符号なし整数値になります。
+呼び出されます。マッピングのない文字が部分的な二バイト文字
+（第一バイトのみの一バイト長の文字列）の場合、
+第一引数は未定義値（C<undef>）になり、
+第二引数はバイトを表す符号なし整数値になります。
 部分文字でなければ、第一引数は、文字を表す文字列になります。
+
+デフォルトでは、部分的な二バイト文字は、文字列（C<STRING>）の末尾にのみ
+現れる可能性があり、文字列の先頭や途中には現れません
+（C<SJIS_OPTION> の C<'t'> も参照のこと）。
 
 例
 
@@ -123,9 +129,9 @@ CP-932 を UTF-32BE に変換します。
 =head2 Unicode から CP-932 への変換
 
 二重定義文字はすべて、Microsoft PRB Q170559 に従って変換されます。
-例えば C<U+2252> は C<"\x87\x90"> ではなく C<"\x81\xe0"> に変換されます。
+例えば C<U+2252> は C<"\x87\x90"> ではなく C<"\x81\xE0"> に変換されます。
 
-第一引数がレファレンスの場合、それは C<UNICODE_CALLBACK> として
+第一引数がレファレンスの場合、それは C<UNICODE_CALLBACK> として、
 CP-932 への対応がない Unicode 文字の処理に用いられます。
 (C<STRING> にレファレンスを与えることはできません。)
 
@@ -136,14 +142,17 @@ C<UNICODE_CALLBACK> が与えられている場合、
 もし C<UNICODE_CALLBACK> が与えられていない場合、
 CP-932 への対応がない Unicode 文字は黙って削除され、
 また、部分文字は一バイト分跳ばされます。
+C<UNICODE_CALLBACK> として、常に空文字列を返す
+コードリファレンス (C<sub {''}>) が渡されたかのように動作します。
 
 今のところ、C<UNICODE_CALLBACK> としては、
 コードリファレンスのみが使えます。
-そのコードリファレンスの返り値が未対応文字の代わりに挿入されます。
+そのコードリファレンスの返り値が
+マッピングのない文字の代わりに挿入されます。
 
 コードリファレンス C<UNICODE_CALLBACK> は、
-一個以上の引数とともに呼び出されます。未対応文字が
-部分的文字（不正なバイト）の場合、第一引数は未定義値になり、
+一個以上の引数とともに呼び出されます。マッピングのない文字が
+部分的文字（不正なバイト）の場合、第一引数は未定義値（C<undef>）になり、
 第二引数はバイトを表す符号なし整数値になります。
 部分文字でなければ、第一引数は、Unicode文字の符号位置を表す
 符号なし整数値になります。
@@ -175,7 +184,9 @@ C<UNICODE_OPTION> を C<STRING> の後におくことができます。
            U+F8F1 => 0xFD,  U+F8F2 => 0xFE,  U+F8F3 => 0xFF.
 
     'f'    Unicode から CP-932 への幾つかの代用的な変換 (fallbacks) を
-           追加します。
+           追加します。マッピングが追加される文字は、latin-1 領域
+           [U+00A0..U+00FF] のうちの幾つかの文字と、平仮名のヴ [U+3094,
+           片仮名のヴ (0x8394) になります] です。
 
 =over 4
 
@@ -188,7 +199,7 @@ UTF-8 を CP-932 に変換します。
 Unicode を CP-932 に変換します。
 
 この B<Unicode> は、Perl の内部形式（L<perlunicode> 参照）。
-C<SVf_UTF8> フラグ付きでない場合、ISO 8859-1 文字列として
+C<SVf_UTF8> フラグ付きでない場合、ISO 8859-1 (latin1) 文字列として
 Unicode に upgrade されます。
 
 B<この関数は Perl 5.6.1 以降、かつ XS 版でのみ提供されます。>
@@ -245,11 +256,11 @@ B<要求されれば:>
 
 このモジュールの Pure Perl 版はワイド文字（L<perlunicode> を参照）を
 理解できません。必要なら、Perl 5.7 以降の
-C<utf8::decode>/C<utf8::encode>（L<utf8.pm> を参照）を使ってください。
+C<utf8::decode>/C<utf8::encode>（L<utf8> を参照）を使ってください。
 
 =head1 作者
 
-SADAHIRO, Tomoyuki
+SADAHIRO, Tomoyuki （貞廣 知行）
 
   SADAHIRO@cpan.org
 
@@ -273,6 +284,8 @@ Conversion Problem Between Shift-JIS and Unicode
 http://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP932.TXT
 
 http://www.microsoft.com/typography/unicode/932.txt (dead link)
+
+http://www.microsoft.com/globaldev/reference/dbcs/932.htm
 
 http://oss.software.ibm.com/cvs/icu/charset/data/xml/windows-932-2000.xml
 

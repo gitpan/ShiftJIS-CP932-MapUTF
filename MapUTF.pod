@@ -14,9 +14,8 @@ ShiftJIS::CP932::MapUTF - conversion between Microsoft Windows CP-932 and Unicod
 
 The table of Microsoft Windows CodePage 932 (CP-932) comprises 7915 characters:
 
-    JIS X 0201 single-byte graphic characters (159 characters),
-    JIS X 0211 single-byte control characters (32 characters),
-    JIS X 0208 double-byte graphic characters (6879 characters),
+    JIS X 0201/0211 single-byte characters (191 characters),
+    JIS X 0211 double-byte characters (6879 characters),
     NEC special characters (83 characters, row 13),
     NEC-selected IBM extended characters (374 characters, rows 89..92),
     and IBM extended characters (388 characters, rows 115..119).
@@ -33,33 +32,40 @@ Actually, 7915 characters in CP-932 must be
 mapped to 7517 characters in Unicode.
 There are 398 non-round-trip mappings; i.e.
 
-This module provides some functions to map properly
+This module provides some functions to convert properly
 from CP-932 to Unicode, and vice versa.
 
 =head2 Transcoding from CP-932 to Unicode
 
 If the first parameter is a reference,
-that are used for coping with CP-932 characters
+that is used for coping with CP-932 characters
 unmapped to Unicode, C<SJIS_CALLBACK>.
 (any reference will not allowed as C<STRING>.)
 
-If C<SJIS_CALLBACK> is given, the second parameter
-is used as C<STRING>; otherwise the first.
+If C<SJIS_CALLBACK> is given, C<STRING> is
+the second parameter; otherwise the first.
 
 If C<SJIS_CALLBACK> is not specified,
 CP-932 characters unmapped to Unicode are silently deleted
 and partial bytes are skipped by one byte.
+(as if a coderef constantly returning null string, C<sub {''}>,
+is passed as C<SJIS_CALLBACK>.)
 
-Currently, only coderefs are used as C<SJIS_CALLBACK>.
+Currently, only coderefs are allowed as C<SJIS_CALLBACK>.
 A string returned from C<SJIS_CALLBACK> is inserted
-in place of unmapped characters.
+in place of the unmapped character.
 
 A coderef as C<SJIS_CALLBACK> is called with one or more arguments.
 If the unmapped character is a partial double-byte character
-(i.e. the leading byte string), the first argument is C<undef>
+(i.e. a string with onebyte length of leading byte),
+the first argument is C<undef>
 and the second argument is an unsigned integer representing the byte.
-If not partial, the first argument is a defined string
-representing a character.
+If the unmapped character is not partial, the first argument is
+a defined string representing a character.
+
+By default, a partial double-byte character may appear
+only at the end of C<STRING>; does not in the beginning
+nor in the middle (see also 't' of C<SJIS_OPTION>).
 
 Example
 
@@ -79,17 +85,17 @@ I.e. you should prepare C<SJIS_CALLBACK> for each UTF.
 C<SJIS_OPTION> may be specified after C<STRING>. They can be combined
 like C<'tg'> and C<'gst'> (the order does not matter).
 
-    'g'    add mapping of CP-932 gaiji (user defined characters)
-           [0xF040 to 0xF9FC (rows 95 to 114)]
-           to Unicode's PUA [0xE000 to 0xE757]（1880 characters）.
+    'g'    add mappings of Gaiji (user defined characters)
+           [0xF040 to 0xF9FC (rows 95 to 114) in CP-932]
+           to Unicode's PUA [0xE000 to 0xE757] (1880 characters).
 
-    's'    add mapping of CP-932 undefined single-byte characters:
+    's'    add mappings of undefined Single-byte characters:
            0x80 => U+0080,  0xA0 => U+F8F0,
            0xFD => U+F8F1,  0xFE => U+F8F2,  0xFF => U+F8F3.
 
-    't'    check trailing byte ranges [0x40..0x7E, 0x80..0xFC].
-           I.e. "\x81\x39" is assumed as an undefined double-byte character
-           by default; with 't', it is a partial byte 0x81
+    't'    check the Trailing byte range [0x40..0x7E, 0x80..0xFC].
+           E.g. "\x81\x39" is regarded as an undefined double-byte character
+           by default; with 't', it is a partial character byte 0x81
            followed by a single-byte character "\x39".
 
 =over 4
@@ -127,23 +133,25 @@ Converts CP-932 to UTF-32BE.
 =head2 Transcoding from Unicode to CP-932
 
 Any duplicates are converted according to Microsoft PRB Q170559.
-E.g. C<U+2252> is converted to C<\x81\xe0>, not to C<\x87\x90>.
+E.g. C<U+2252> is converted to C<"\x81\xE0">, not to C<"\x87\x90">.
 
 If the first parameter is a reference,
-that are used for coping with Unicode characters
+that is used for coping with Unicode characters
 unmapped to CP-932, C<UNICODE_CALLBACK>.
 (any reference will not allowed as C<STRING>.)
 
-If C<UNICODE_CALLBACK> is given, the second parameter
-is used as C<STRING>; otherwise the first.
+If C<UNICODE_CALLBACK> is given, C<STRING> is
+the second parameter; otherwise the first.
 
 If C<UNICODE_CALLBACK> is not specified,
 CP-932 characters unmapped to Unicode are silently deleted
 and partial bytes are skipped by one byte.
+(as if a coderef constantly returning null string, C<sub {''}>
+is passed as C<UNICODE_CALLBACK>.)
 
-Currently, only coderefs are used as C<UNICODE_CALLBACK>.
+Currently, only coderefs are allowed as C<UNICODE_CALLBACK>.
 A string returned from the coderef is inserted
-in place of unmapped characters.
+in place of the unmapped character.
 
 A coderef as C<UNICODE_CALLBACK> is called with one or more arguments.
 If the unmapped character is a partial character (an illegal byte),
@@ -170,15 +178,18 @@ The return value of C<UNICODE_CALLBACK> must be legal in CP-932.
 C<UNICODE_OPTION> may be specified after C<STRING>. They can be combined
 like C<'fg'> and C<'gsf'> (the order does not matter).
 
-    'g'    add mapping of CP-932 gaiji (user defined characters)
-           [0xF040 to 0xF9FC (rows 95 to 114)]
-           from Unicode's PUA [0xE000 to 0xE757]（1880 characters）.
+    'g'    add mappings of Gaiji (user defined characters)
+           [0xF040 to 0xF9FC (rows 95 to 114) in CP-932]
+           from Unicode's PUA [0xE000 to 0xE757] (1880 characters).
 
-    's'    add mapping of CP-932 undefined single-byte characters:
+    's'    add mappings of undefined Single-byte characters:
            U+0080 => 0x80,  U+F8F0 => 0xA0,
            U+F8F1 => 0xFD,  U+F8F2 => 0xFE,  U+F8F3 => 0xFF.
 
-    'f'    add some fallback mappings from Unicode to CP-932.
+    'f'    add some Fallback mappings from Unicode to CP-932.
+           The characters additionally mapped are
+           some characters in latin-1 region [U+00A0..U+00FF], and
+           HIRAGANA LETTER VU [U+3094, to KATAKANA LETTER VU, 0x8394].
 
 =over 4
 
@@ -190,8 +201,8 @@ Converts UTF-8 to CP-932.
 
 Converts Unicode to CP-932.
 
-This B<Unicode> is in the Perl's internal format (see L<perlunicode>).
-If not flagged with C<SVf_UTF8>, upgraded as an ISO 8859-1 string).
+This B<Unicode> is coded in the Perl's internal format (see L<perlunicode>).
+If not flagged with C<SVf_UTF8>, upgraded as an ISO 8859-1 (latin1) string.
 
 B<This function is provided only for Perl 5.6.1 or later, and via XS.>
 
@@ -239,7 +250,7 @@ B<On request:>
                       utf32_to_cp932 [*]
 
 [*] Their counterparts C<cp932_to_utf16()> and C<cp932_to_utf32()>
-are not implemented yet. They needs more investigation
+are not implemented yet. They need more investigation
 on return values from C<SJIS_CALLBACK>...
 (concatenation needs recognition of and coping with C<BOM>)
 
@@ -247,7 +258,7 @@ on return values from C<SJIS_CALLBACK>...
 
 Pure Perl edition of this module doesn't understand
 any logically wide characters (see L<perlunicode>).
-Use C<utf8::decode>/C<utf8::encode> (see L<utf8.pm>) on Perl 5.7 or later
+Use C<utf8::decode>/C<utf8::encode> (see L<utf8>) on Perl 5.7 or later
 if necessary.
 
 =head1 AUTHOR
@@ -276,6 +287,8 @@ Conversion Problem Between Shift-JIS and Unicode
 http://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP932.TXT
 
 http://www.microsoft.com/typography/unicode/932.txt (dead link)
+
+http://www.microsoft.com/globaldev/reference/dbcs/932.htm
 
 http://oss.software.ibm.com/cvs/icu/charset/data/xml/windows-932-2000.xml
 

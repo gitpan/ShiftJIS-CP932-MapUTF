@@ -10,7 +10,7 @@ require Exporter;
 @EXPORT = qw(to_cp932_supplements);
 @EXPORT_OK = qw(%Supplements);
 
-$VERSION = '0.22';
+$VERSION = '0.31';
 
 %Supplements = (
   0x00A2,	# CENT SIGN
@@ -91,7 +91,7 @@ ShiftJIS::CP932::MapUTF::Supplements - Supplemental Mapping from Unicode to Micr
 
 =head1 SYNOPSIS
 
-  use ShiftJIS::CP932::MapUTF;
+  use ShiftJIS::CP932::MapUTF qw(:all);
   use ShiftJIS::CP932::MapUTF::Supplements;
 
   $cp932_string  = utf8_to_cp932   (\&to_cp932_supplements, $utr8_string);
@@ -106,14 +106,14 @@ ShiftJIS::CP932::MapUTF::Supplements - Supplemental Mapping from Unicode to Micr
 =head1 DESCRIPTION
 
 This module provides some supplemental mappings (fallbacks)
-from Unicode to Windows CP-932, via a coderef.
+from Unicode to CP-932, via a coderef.
 
 =over 4
 
 =item C<$cp932_char = to_cp932_supplements($unicode_codepoint)>
 
-Returns a Windows CP-932 character (as a string) for some Unicode codepoints
-unmapped to Windows CP-932.
+Returns a CP-932 character (as a string) for some Unicode code points
+unmapped to CP-932.
 Otherwise returns a null string.
 
 e.g. C<to_cp932_supplements(0xA5)> returns C<"\x5C">.
@@ -129,12 +129,13 @@ may be added, modified, or removed in future.
 
 =head1 AUTHOR
 
-Tomoyuki SADAHIRO
+SADAHIRO Tomoyuki
 
-  bqw10602@nifty.com
+  SADAHIRO@cpan.org
+
   http://homepage1.nifty.com/nomenclator/perl/
 
-  Copyright(C) 2001-2002, SADAHIRO Tomoyuki. Japan. All rights reserved.
+  Copyright(C) 2001-2003, SADAHIRO Tomoyuki. Japan. All rights reserved.
 
 This module is free software; you can redistribute it
 and/or modify it under the same terms as Perl itself.

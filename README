@@ -1,4 +1,4 @@
-ShiftJIS::CP932::MapUTF version 0.30
+ShiftJIS::CP932::MapUTF version 0.31
 ================
 
 NAME
@@ -31,7 +31,8 @@ This module provides the following functions:
     utf16_to_cp932()   converts UTF-16   to CP932.
     utf32_to_cp932()   converts UTF-32   to CP932.
 
-In addition, the XS version supports these (REQUIRES Perl 5.6.1 or later).
+In addition, the XS edition supports the following functions
+(REQUIRES Perl 5.6.1 or later).
 
     cp932_to_unicode() converts CP932 to Unicode [*].
     unicode_to_cp932() converts Unicode [*] to CP932.
@@ -45,7 +46,6 @@ XS edition:     Perl 5.6.1 or later
 
 Non-XS edition: Perl 5.003 or later
                (Perl 5.005 or later Recommended)
-
 
 INSTALLATION
 
@@ -79,8 +79,14 @@ type the following:
    make test
    make install
 
-Note: The file MapUTF.pmN is required to build XS.
-      Don't delete it before the install completes.
+Note:
+
+(1) The file MapUTF.pmN is required to build XS.
+    Don't delete it before the install completes.
+
+(2) Pure Perl edition, MapUTF.pmN, may work without any other file
+    in this distribution (it must be renamed MapUTF.pm, though)
+    Tests (in t/*.t files) requires MapUTF/Supplements.pm, too.
 
 COPYRIGHT AND LICENCE
 
@@ -92,11 +98,4 @@ COPYRIGHT AND LICENCE
 
     This module is free software; you can redistribute it
     and/or modify it under the same terms as Perl itself.
-
-SEE ALSO
-
-    Microsoft PRB: Conversion Problem Between Shift-JIS and Unicode
-    (Article ID: Q170559)
-
-    ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP932.TXT
 
