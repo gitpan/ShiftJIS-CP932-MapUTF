@@ -1,5 +1,8 @@
 Revision history for Perl module ShiftJIS::CP932::MapUTF.
 
+0.11  Sun Feb 10 17:07:22 2002
+    - add ShiftJIS::CP932::MapUTF::Supplements (experimental).
+
 0.10  Sun Jan 20 19:44:06 2002
     - some detypo in POD and README.
 

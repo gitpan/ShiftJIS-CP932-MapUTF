@@ -4,6 +4,8 @@ README
 MANIFEST
 MapUTF.pm
 MapUTF.xs
+MapUTF/Supplements.pm
 mkheader
 cp932map
 t/test.t
+t/supple.t

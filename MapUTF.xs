@@ -10,8 +10,7 @@
 #define isCP932TRL(i)   (0x40<=(i) && (i)<=0x7E || 0x80<=(i) && (i)<=0xFC)
 
 #define isCP932SBC(p)   (isCP932SNG(*(p)))
-#define isCP932DBC(p)   (isCP932LED(*(p)))
-#define isCP932DBC2(p)  (isCP932LED(*(p)) && isCP932TRL((p)[1]))
+#define isCP932DBC(p)   (isCP932LED(*(p)) && isCP932TRL((p)[1]))
 #define isCP932MBLEN(p) (isCP932DBC(p) ? 2 : 1)
 
 /* Perl 5.6.1 ? */

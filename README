@@ -1,4 +1,4 @@
-ShiftJIS::CP932::MapUTF version 0.10
+ShiftJIS::CP932::MapUTF version 0.11
 ================
 
 NAME
@@ -49,7 +49,7 @@ Tomoyuki SADAHIRO
   bqw10602@nifty.com
   http://homepage1.nifty.com/nomenclator/perl/
 
-  Copyright(C) 2001, SADAHIRO Tomoyuki. Japan. All rights reserved.
+  Copyright(C) 2001-2002, SADAHIRO Tomoyuki. Japan. All rights reserved.
 
 This program is free software; you can redistribute it and/or 
 modify it under the same terms as Perl itself.
@@ -59,6 +59,5 @@ SEE ALSO
 Microsoft PRB: Conversion Problem Between Shift-JIS and Unicode
 (Article ID: Q170559)
 
-Unicode.org
 ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP932.TXT
 
