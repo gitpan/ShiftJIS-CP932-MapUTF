@@ -31,7 +31,7 @@
     s = (U8*)SvPV(src,srclen);			\
     e = s + srclen;				\
     dstlen = srclen * maxlen + 1;		\
-    dst = newSV(dstlen);			\
+    dst = sv_2mortal(newSV(dstlen));		\
     (void)SvPOK_only(dst);
 
 
@@ -56,11 +56,9 @@ sv_cat_retcvref (SV *dst, SV *cv, SV *sv, bool isbyte)
 {
     dSP;
     int count;
-    SV* retsv;
     ENTER;
     SAVETMPS;
     PUSHMARK(SP);
-
     if (isbyte)
 	XPUSHs(&PL_sv_undef);
     XPUSHs(sv_2mortal(sv));
@@ -69,12 +67,10 @@ sv_cat_retcvref (SV *dst, SV *cv, SV *sv, bool isbyte)
     SPAGAIN;
     if (count != 1)
 	croak("Panic in XS, " PkgName "\n");
-    retsv = newSVsv(POPs);
+    sv_catsv(dst,POPs);
     PUTBACK;
     FREETMPS;
     LEAVE;
-    sv_catsv(dst,retsv);
-    sv_2mortal(retsv);
 }
 
 static STRLEN maxlen_fm[] = {
@@ -147,7 +143,7 @@ cp932_to_unicode (arg1, arg2=0)
 	*d = '\0';
 	SvCUR_set(dst, d - (U8*)SvPVX(dst));
     }
-    XPUSHs(sv_2mortal(dst));
+    XPUSHs(dst);
 
 
 void
@@ -194,7 +190,7 @@ cp932_to_utf8 (arg1, arg2=0)
 	*d = '\0';
 	SvCUR_set(dst, d - (U8*)SvPVX(dst));
     }
-    XPUSHs(sv_2mortal(dst));
+    XPUSHs(dst);
 
 
 void
@@ -253,7 +249,7 @@ unicode_to_cp932 (arg1, arg2=0)
 	*d = '\0';
 	SvCUR_set(dst, d - (U8*)SvPVX(dst));
     }
-    XPUSHs(sv_2mortal(dst));
+    XPUSHs(dst);
 
 
 
@@ -330,6 +326,6 @@ utf8_to_cp932 (arg1, arg2=0)
 	*d = '\0';
 	SvCUR_set(dst, d - (U8*)SvPVX(dst));
     }
-    XPUSHs(sv_2mortal(dst));
+    XPUSHs(dst);
 
 

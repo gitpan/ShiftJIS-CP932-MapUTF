@@ -10,7 +10,7 @@ require Exporter;
 @EXPORT = qw(to_cp932_supplements);
 @EXPORT_OK = qw(%Supplements);
 
-$VERSION = '0.20';
+$VERSION = '0.21';
 
 %Supplements = (
   0x00A2,	# CENT SIGN
@@ -104,7 +104,7 @@ ShiftJIS::CP932::MapUTF::Supplements - Supplemental Mapping from Unicode to Micr
 =head1 DESCRIPTION
 
 This module provides some supplemental mappings (fallbacks)
-from Unicode to Windows CP-932, via a coderef, the C<UNICODE_FALLBACK> handler.
+from Unicode to Windows CP-932, via a coderef.
 
 =over 4
 

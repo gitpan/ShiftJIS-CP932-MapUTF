@@ -35,47 +35,47 @@ from Windows CP-932 to Unicode, and vice versa.
 
 =head2 Functions to transcode CP-932 to Unicode
 
-If a coderef C<SJIS_FALLBACK> is not specified,
+If a coderef C<SJIS_CALLBACK> is not specified,
 characters unmapped to Unicode are deleted;
-otherwise, a string returned from C<SJIS_FALLBACK> is inserted there.
-The argument for B<SJIS_FALLBACK> is a CP-932 string like
+otherwise, a string returned from C<SJIS_CALLBACK> is inserted there.
+The argument for B<SJIS_CALLBACK> is a CP-932 string like
 C<"\x80">, C<"\x82\xf2">, C<"\xfc\xfc">, C<"\xff">
 (that may be a byte that is illegal or a partial charcter).
 
-The return value of B<SJIS_FALLBACK> must be legal in the target format.
-E.g. never use with cp932_to_utf16be() a fallback that returns UTF-8.
-I.e. you should prepare a fallback coderef for each encoding.
+The return value of B<SJIS_CALLBACK> must be legal in the target format.
+E.g. never use with cp932_to_utf16be() a callback that returns UTF-8.
+I.e. you should prepare a callback coderef for each encoding.
 
 =over 4
 
 =item C<cp932_to_utf8(STRING)>
 
-=item C<cp932_to_utf8(SJIS_FALLBACK, STRING)>
+=item C<cp932_to_utf8(SJIS_CALLBACK, STRING)>
 
 Converts Windows CP-932 to UTF-8
 
 =item C<cp932_to_unicode(STRING)>
 
-=item C<cp932_to_unicode(SJIS_FALLBACK, STRING)>
+=item C<cp932_to_unicode(SJIS_CALLBACK, STRING)>
 
 Converts Windows CP-932 to Unicode
-(Perl's internal form (see perlunicode), flagged).
+(Perl's internal format (see perlunicode), flagged).
 
 B<This function is provided only for Perl 5.6.1 or later, and via XS.>
 
-=item C<cp932_to_utf16le([SJIS_FALLBACK,] STRING)>
+=item C<cp932_to_utf16le([SJIS_CALLBACK,] STRING)>
 
 Converts Windows CP-932 to UTF-16LE.
 
-=item C<cp932_to_utf16be([SJIS_FALLBACK,] STRING)>
+=item C<cp932_to_utf16be([SJIS_CALLBACK,] STRING)>
 
 Converts Windows CP-932 to UTF-16BE.
 
-=item C<cp932_to_utf32le([SJIS_FALLBACK,] STRING)>
+=item C<cp932_to_utf32le([SJIS_CALLBACK,] STRING)>
 
 Converts Windows CP-932 to UTF-32LE.
 
-=item C<cp932_to_utf32be([SJIS_FALLBACK,] STRING)>
+=item C<cp932_to_utf32be([SJIS_CALLBACK,] STRING)>
 
 Converts Windows CP-932 to UTF-32BE.
 
@@ -86,12 +86,12 @@ Converts Windows CP-932 to UTF-32BE.
 Any duplicates are normalized; e.g. C<U+2252> is converted
 to C<\x81\xe0>, not to C<\x87\x90>, in CP-932.
 
-If the C<UNICODE_FALLBACK> coderef is not specified,
+If the C<UNICODE_CALLBACK> coderef is not specified,
 illegal bytes are skipped by one byte,
 and characters unmapped to Windows CP-932 are deleted;
-otherwise, a string returned from C<UNICODE_FALLBACK> is inserted there.
+otherwise, a string returned from C<UNICODE_CALLBACK> is inserted there.
 
-The 1st argument for B<UNICODE_FALLBACK> is its Unicode codepoint (integer),
+The 1st argument for B<UNICODE_CALLBACK> is its Unicode codepoint (integer),
 or B<undef> when encounters an illegal byte.
 
 If the 1st argument is B<undef>, integer in byte is passed as the 2nd argument.
@@ -113,34 +113,34 @@ converted to numerical character references for HTML 4.01.
 
 =item C<utf8_to_cp932(STRING)>
 
-=item C<utf8_to_cp932(UNICODE_FALLBACK, STRING)>
+=item C<utf8_to_cp932(UNICODE_CALLBACK, STRING)>
 
 Converts UTF-8 to Windows CP-932.
 
 =item C<unicode_to_cp932(STRING)>
 
-=item C<unicode_to_cp932(UNICODE_FALLBACK, STRING)>
+=item C<unicode_to_cp932(UNICODE_CALLBACK, STRING)>
 
 Converts Unicode to Windows CP-932.
 
-This B<Unicode> is the Perl's internal form (see perlunicode).
-If not flagged, upgraded as an ISO 8859-1 string).
+This B<Unicode> is in the Perl's internal format (see perlunicode).
+If not flagged with C<SVf_UTF8>, upgraded as an ISO 8859-1 string).
 
 B<This function is provided only for Perl 5.6.1 or later, and via XS.>
 
-=item C<utf16le_to_cp932([UNICODE_FALLBACK,] STRING)>
+=item C<utf16le_to_cp932([UNICODE_CALLBACK,] STRING)>
 
 Converts UTF-16LE to Windows CP-932.
 
-=item C<utf16be_to_cp932([UNICODE_FALLBACK,] STRING)>
+=item C<utf16be_to_cp932([UNICODE_CALLBACK,] STRING)>
 
 Converts UTF-16BE to Windows CP-932.
 
-=item C<utf32le_to_cp932([UNICODE_FALLBACK,] STRING)>
+=item C<utf32le_to_cp932([UNICODE_CALLBACK,] STRING)>
 
 Converts UTF-32LE to Windows CP-932.
 
-=item C<utf32be_to_cp932([UNICODE_FALLBACK,] STRING)>
+=item C<utf32be_to_cp932([UNICODE_CALLBACK,] STRING)>
 
 Converts UTF-32BE to Windows CP-932.
 

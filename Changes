@@ -1,8 +1,12 @@
 Revision history for Perl module ShiftJIS::CP932::MapUTF.
 
+0.21  Sun Nov 03 19:32:21 2002
+    - fix a momery leak when the process died in a callback.
+      like: eval { utf32be_to_cp932(sub { die }, "\x00"); };
+
 0.20  Sat Nov 02 14:42:04 2002
     - manipulation of illegal Unicode strings: u*_to_cp932 functions
-      may call UNICODE_FALLBACK coderef with two parameters.
+      may call a UNICODE_CALLBACK coderef with two parameters.
     - cp932_to_utf8() and utf8_to_cp932() are supported again
       (as before v. 0.08).
     - non-XS (pure Perl) version is supported again.

@@ -30,7 +30,7 @@ require AutoLoader;
 @EXPORT_OK = map @$_, values %EXPORT_TAGS;
 $EXPORT_TAGS{all}  = [ @EXPORT_OK ];
 
-$VERSION = '0.20';
+$VERSION = '0.21';
 $PACKAGE = 'ShiftJIS::CP932::MapUTF'; # __PACKAGE__
 
 bootstrap ShiftJIS::CP932::MapUTF $VERSION;

@@ -19,3 +19,4 @@ t/t06hivu.t
 t/t07supl.t
 t/t08illeg.t
 t/t09illfb.t
+t/t10heavy.t

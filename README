@@ -1,4 +1,4 @@
-ShiftJIS::CP932::MapUTF version 0.20
+ShiftJIS::CP932::MapUTF version 0.21
 ================
 
 NAME
@@ -33,7 +33,7 @@ In addition, the XS version supports these (REQUIRES Perl 5.6.1 or later).
     cp932_to_unicode() converts CP932 to Unicode [*].
     unicode_to_cp932() converts Unicode [*] to CP932.
 
-    [*] .. Perl's internal form. see perlunicode.pod in Perl 5.6 or later.
+    [*] .. Perl's internal format. see perlunicode.pod in Perl 5.6 or later.
 
 DEPENDENCIES AND INSTALLATION
 
