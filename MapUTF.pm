@@ -21,8 +21,10 @@ require AutoLoader;
 %EXPORT_TAGS = (
     'unicode'  => [ 'cp932_to_unicode', 'unicode_to_cp932' ],
     'utf8'     => [ 'cp932_to_utf8',    'utf8_to_cp932'    ],
+    'utf16'    => [                     'utf16_to_cp932'   ],
     'utf16le'  => [ 'cp932_to_utf16le', 'utf16le_to_cp932' ],
     'utf16be'  => [ 'cp932_to_utf16be', 'utf16be_to_cp932' ],
+    'utf32'    => [                     'utf32_to_cp932'   ],
     'utf32le'  => [ 'cp932_to_utf32le', 'utf32le_to_cp932' ],
     'utf32be'  => [ 'cp932_to_utf32be', 'utf32be_to_cp932' ],
 );
@@ -30,7 +32,7 @@ require AutoLoader;
 @EXPORT_OK = map @$_, values %EXPORT_TAGS;
 $EXPORT_TAGS{all}  = [ @EXPORT_OK ];
 
-$VERSION = '0.21';
+$VERSION = '0.30';
 $PACKAGE = 'ShiftJIS::CP932::MapUTF'; # __PACKAGE__
 
 bootstrap ShiftJIS::CP932::MapUTF $VERSION;

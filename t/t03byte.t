@@ -6,9 +6,9 @@ use ShiftJIS::CP932::MapUTF qw(:all);
 $loaded = 1;
 print "ok 1\n";
 
-my $repeat = 1000;
+$repeat = 1000;
 
-my $hasUnicode = defined &cp932_to_unicode;
+$hasUnicode = defined &cp932_to_unicode;
 
 print "\x71\xff\x72\xff\x73\xff\x74\xff\x75\xff"
 	x $repeat eq cp932_to_utf16le("\xb1\xb2\xb3\xb4\xb5" x $repeat)
@@ -46,3 +46,5 @@ print ! $hasUnicode || "\x5C\x5C\x5C\x5C\x5C" x $repeat eq
 	unicode_to_cp932("\x5c\x5c\x5c\x5c\x5c" x $repeat)
     ? "ok" : "not ok" , " ", ++$loaded, "\n";
 
+1;
+__END__

@@ -1,4 +1,4 @@
-ShiftJIS::CP932::MapUTF version 0.21
+ShiftJIS::CP932::MapUTF version 0.30
 ================
 
 NAME
@@ -28,17 +28,26 @@ This module provides the following functions:
     utf32le_to_cp932() converts UTF-32LE to CP932.
     utf32be_to_cp932() converts UTF-32BE to CP932.
 
+    utf16_to_cp932()   converts UTF-16   to CP932.
+    utf32_to_cp932()   converts UTF-32   to CP932.
+
 In addition, the XS version supports these (REQUIRES Perl 5.6.1 or later).
 
     cp932_to_unicode() converts CP932 to Unicode [*].
     unicode_to_cp932() converts Unicode [*] to CP932.
 
-    [*] .. Perl's internal format. see perlunicode.pod in Perl 5.6 or later.
+    [*] .. Perl's internal format. see perlunicode.pod in Perl 5.6.1 or later.
 
-DEPENDENCIES AND INSTALLATION
 
-XS version:     Perl 5.6.1 or later
-Non-XS version: Perl 5.003 or later
+DEPENDENCIES
+
+XS edition:     Perl 5.6.1 or later
+
+Non-XS edition: Perl 5.003 or later
+               (Perl 5.005 or later Recommended)
+
+
+INSTALLATION
 
 To install this module type the following:
 
@@ -53,7 +62,7 @@ If you don't have a C compiler, try to install Non-XS as below.
 If Perl 5.6.0 or before, XS will be automatically disabled
 and Non-XS will be installed.
 
-If you have a C compiler and want to use the XS version,
+If you have a C compiler and want to use XS,
 type the following:
 
    perl Makefile.PL xs    # something beginning by 'x' is also ok.
@@ -61,7 +70,7 @@ type the following:
    make test
    make install
 
-If you decide to install the Non-XS version after trying to build the XS,
+If you decide to install Non-XS after trying to build the XS,
 type the following:
 
    make clean
@@ -75,12 +84,11 @@ Note: The file MapUTF.pmN is required to build XS.
 
 COPYRIGHT AND LICENCE
 
-    Tomoyuki SADAHIRO
+    SADAHIRO Tomoyuki <SADAHIRO@cpan.org>
 
-        bqw10602@nifty.com
         http://homepage1.nifty.com/nomenclator/perl/
 
-    Copyright(C) 2001-2002, SADAHIRO Tomoyuki. Japan. All rights reserved.
+    Copyright(C) 2001-2003, SADAHIRO Tomoyuki. Japan. All rights reserved.
 
     This module is free software; you can redistribute it
     and/or modify it under the same terms as Perl itself.

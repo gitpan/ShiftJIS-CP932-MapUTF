@@ -6,9 +6,9 @@ use ShiftJIS::CP932::MapUTF qw(:all);
 $loaded = 1;
 print "ok 1\n";
 
-my $repeat = 1000;
+$repeat = 1000;
 
-my $hasUnicode = defined &cp932_to_unicode;
+$hasUnicode = defined &cp932_to_unicode;
 
 my $vuSjis = "abc\x82\xf2pqr\x82\xf2xyz";
 my $vuUni  = $hasUnicode
@@ -37,19 +37,19 @@ print !$hasUnicode || $vuUni eq cp932_to_unicode($codeUni,  $vuSjis)
     ? "ok" : "not ok" , " ", ++$loaded, "\n";
 
 print $vuUTF8 eq cp932_to_utf8($codeUTF8, $vuSjis)
-   ? "ok" : "not ok" , " ", ++$loaded, "\n";
+    ? "ok" : "not ok" , " ", ++$loaded, "\n";
 
 print $vuU16l eq cp932_to_utf16le($codeU16l, $vuSjis)
-   ? "ok" : "not ok" , " ", ++$loaded, "\n";
+    ? "ok" : "not ok" , " ", ++$loaded, "\n";
 
 print $vuU16b eq cp932_to_utf16be($codeU16b, $vuSjis)
-   ? "ok" : "not ok" , " ", ++$loaded, "\n";
+    ? "ok" : "not ok" , " ", ++$loaded, "\n";
 
 print $vuU32l eq cp932_to_utf32le($codeU32l, $vuSjis)
-   ? "ok" : "not ok" , " ", ++$loaded, "\n";
+    ? "ok" : "not ok" , " ", ++$loaded, "\n";
 
 print $vuU32b eq cp932_to_utf32be($codeU32b, $vuSjis)
-   ? "ok" : "not ok" , " ", ++$loaded, "\n";
+    ? "ok" : "not ok" , " ", ++$loaded, "\n";
 
 print !$hasUnicode || $vuNCR eq unicode_to_cp932($codeNCR, $vuUni)
     ? "ok" : "not ok" , " ", ++$loaded, "\n";
@@ -112,3 +112,5 @@ print "HIRAGANA LETTER VU" x $repeat eq
 	cp932_to_utf32be($codeVnam, "\x82\xf2" x $repeat)
     ? "ok" : "not ok" , " ", ++$loaded, "\n";
 
+1;
+__END__

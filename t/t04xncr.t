@@ -1,14 +1,14 @@
 
-BEGIN { $| = 1; print "1..25\n"; }
+BEGIN { $| = 1; print "1..37\n"; }
 END {print "not ok 1\n" unless $loaded;}
 
 use ShiftJIS::CP932::MapUTF qw(:all);
 $loaded = 1;
 print "ok 1\n";
 
-my $repeat = 1000;
+$repeat = 1000;
 
-my $hasUnicode = defined &cp932_to_unicode;
+$hasUnicode = defined &cp932_to_unicode;
 
 sub hexNCR {
     my ($char, $byte) = @_;
@@ -18,36 +18,36 @@ sub hexNCR {
 
 #####
 
-print "&#x10000;abc&#x12345;xyz&#x10ffff;" eq
+print "&#x10000;abc&#x12345;xyz&#x10fffc;" eq
 	utf16le_to_cp932(\&hexNCR, "\x00\xd8\x00\xdc\x61\x00\x62\x00\x63\x00"
-	    . "\x08\xD8\x45\xDF\x78\x00\x79\x00\x7a\x00\xff\xdb\xff\xdf")
+	    . "\x08\xD8\x45\xDF\x78\x00\x79\x00\x7a\x00\xff\xdb\xfc\xdf")
     ? "ok" : "not ok" , " ", ++$loaded, "\n";
 
-print "&#x10000;abc&#x12345;xyz&#x10ffff;" eq
+print "&#x10000;abc&#x12345;xyz&#x10fffc;" eq
 	utf16be_to_cp932(\&hexNCR, "\xd8\x00\xdc\x00\x00\x61\x00\x62\x00\x63"
-	    . "\xD8\x08\xDF\x45\x00\x78\x00\x79\x00\x7a\xdb\xff\xdf\xff")
+	    . "\xD8\x08\xDF\x45\x00\x78\x00\x79\x00\x7a\xdb\xff\xdf\xfc")
     ? "ok" : "not ok" , " ", ++$loaded, "\n";
 
-print "&#x10000;abc&#x12345;xyz&#x10ffff;" eq
+print "&#x10000;abc&#x12345;xyz&#x10fffc;" eq
 	utf32le_to_cp932(\&hexNCR,
 	    "\x00\x00\x01\x00\x61\0\0\0\x62\0\0\0\x63\0\0\0\x45\x23\x01\x00" .
-	    "\x78\0\0\0\x79\0\0\0\x7a\0\0\0\xff\xff\x10\x00")
+	    "\x78\0\0\0\x79\0\0\0\x7a\0\0\0\xfc\xff\x10\x00")
     ? "ok" : "not ok" , " ", ++$loaded, "\n";
 
-print "&#x10000;abc&#x12345;xyz&#x10ffff;" eq
+print "&#x10000;abc&#x12345;xyz&#x10fffc;" eq
 	utf32be_to_cp932(\&hexNCR,
 	    "\x00\x01\x00\x00\0\0\0\x61\0\0\0\x62\0\0\0\x63\x00\x01\x23\x45" .
-	    "\0\0\0\x78\0\0\0\x79\0\0\0\x7a\x00\x10\xff\xff")
+	    "\0\0\0\x78\0\0\0\x79\0\0\0\x7a\x00\x10\xff\xfc")
     ? "ok" : "not ok" , " ", ++$loaded, "\n";
 
-print !$hasUnicode || "&#x10000;abc&#x12345;xyz&#x10ffff;" eq
+print !$hasUnicode || "&#x10000;abc&#x12345;xyz&#x10fffc;" eq
 	unicode_to_cp932(\&hexNCR,  pack 'U*', 0x10000, 0x61, 0x62, 0x63,
-	    0x12345, 0x78, 0x79, 0x7a, 0x10ffff)
+	    0x12345, 0x78, 0x79, 0x7a, 0x10fffc)
     ? "ok" : "not ok" , " ", ++$loaded, "\n";
 
-print "&#x10000;abc&#x12345;xyz&#x10ffff;" eq
+print "&#x10000;abc&#x12345;xyz&#x10fffc;" eq
 	utf8_to_cp932(\&hexNCR, "\xF0\x90\x80\x80\x61\x62\x63" .
-	    "\xF0\x92\x8D\x85\x78\x79\x7A\xF4\x8F\xBF\xBF")
+	    "\xF0\x92\x8D\x85\x78\x79\x7A\xF4\x8F\xBF\xBC")
     ? "ok" : "not ok" , " ", ++$loaded, "\n";
 
 #####
@@ -146,4 +146,68 @@ print !$hasUnicode || "A&#xE0001;B&#x10ABCD;C&#x10000;D" eq
 	unicode_to_cp932(sub { sprintf "&#x%04X;", shift },
 	    "A".chr(0xE0001)."B".chr(0x10ABCD)."C".chr(0x10000)."D")
     ? "ok" : "not ok" , " ", ++$loaded, "\n";
+
+#####
+
+print "&#xfffe;&#xffff;&#xfefe;&#xfeff;&#xfffe;" eq
+	utf16be_to_cp932(\&hexNCR,
+	    "\xff\xfe\xff\xff\xfe\xfe\xfe\xff\xff\xfe")
+    ? "ok" : "not ok" , " ", ++$loaded, "\n";
+
+print "&#xfffe;&#xffff;&#xfefe;&#xfeff;&#xfffe;" eq
+	utf16le_to_cp932(\&hexNCR,
+	    "\xfe\xff\xff\xff\xfe\xfe\xff\xfe\xfe\xff")
+    ? "ok" : "not ok" , " ", ++$loaded, "\n";
+
+print "&#xffff;&#xfefe;&#xfffe;&#xfeff;" eq
+	utf16_to_cp932(\&hexNCR,
+	    "\xff\xfe\xff\xff\xfe\xfe\xfe\xff\xff\xfe")
+    ? "ok" : "not ok" , " ", ++$loaded, "\n";
+
+print "&#xffff;&#xfefe;&#xfeff;&#xfffe;" eq
+	utf16_to_cp932(\&hexNCR,
+	    "\xfe\xff\xff\xff\xfe\xfe\xfe\xff\xff\xfe")
+    ? "ok" : "not ok" , " ", ++$loaded, "\n";
+
+print "&#xffff;&#xfefe;&#xfeff;&#xfffe;" eq
+	utf16_to_cp932(\&hexNCR,
+	    "\xff\xff\xfe\xfe\xfe\xff\xff\xfe")
+    ? "ok" : "not ok" , " ", ++$loaded, "\n";
+
+print "&#xfffe;&#xffff;&#xfefe;&#xfeff;&#xfffe;" eq
+	utf32be_to_cp932(\&hexNCR,
+	    "\0\0\xff\xfe\0\0\xff\xff\0\0\xfe\xfe\0\0\xfe\xff\0\0\xff\xfe")
+    ? "ok" : "not ok" , " ", ++$loaded, "\n";
+
+print "&#xfffe;&#xffff;&#xfefe;&#xfeff;&#xfffe;" eq
+	utf32le_to_cp932(\&hexNCR,
+	    "\xfe\xff\0\0\xff\xff\0\0\xfe\xfe\0\0\xff\xfe\0\0\xfe\xff\0\0")
+    ? "ok" : "not ok" , " ", ++$loaded, "\n";
+
+print "&#xffff;&#xfefe;&#xfffe;&#xfeff;" eq
+	utf32_to_cp932(\&hexNCR,
+	    "\xff\xfe\0\0\xff\xff\0\0\xfe\xfe\0\0\xfe\xff\0\0\xff\xfe\0\0")
+    ? "ok" : "not ok" , " ", ++$loaded, "\n";
+
+print "&#xffff;&#xfefe;&#xfeff;&#xfffe;" eq
+	utf32_to_cp932(\&hexNCR,
+	    "\0\0\xfe\xff\0\0\xff\xff\0\0\xfe\xfe\0\0\xfe\xff\0\0\xff\xfe")
+    ? "ok" : "not ok" , " ", ++$loaded, "\n";
+
+print "&#xffff;&#xfefe;&#xfeff;&#xfffe;" eq
+	utf32_to_cp932(\&hexNCR,
+	    "\0\0\xff\xff\0\0\xfe\xfe\0\0\xfe\xff\0\0\xff\xfe")
+    ? "ok" : "not ok" , " ", ++$loaded, "\n";
+
+print "&#xfffe;&#xfefe;&#xfeff;&#xfffe;" eq
+	utf32_to_cp932(\&hexNCR,
+	    "\0\0\xff\xfe\0\0\xfe\xfe\0\0\xfe\xff\0\0\xff\xfe")
+    ? "ok" : "not ok" , " ", ++$loaded, "\n";
+
+print "&#xfefe;&#xfefe;&#xfeff;&#xfffe;" eq
+	utf32_to_cp932(\&hexNCR,
+	    "\0\0\xfe\xfe\0\0\xfe\xfe\0\0\xfe\xff\0\0\xff\xfe")
+    ? "ok" : "not ok" , " ", ++$loaded, "\n";
+1;
+__END__
 

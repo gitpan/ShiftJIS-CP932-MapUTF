@@ -8,7 +8,7 @@ if (($] < 5.0060009 || $arg =~ /^n/i) and -f "MapUTF.xs") {
     print STDERR "Disabling XS in sources...\n";
 
     die "***** Failed, sources could be inconsistent! *****\n"
-     unless File::Copy::move('MANIFEST',	'MANIFEST.X')
+    unless  File::Copy::move('MANIFEST',	'MANIFEST.X')
 	and File::Copy::move('MANIFEST.N',	'MANIFEST')
 	and File::Copy::move('MapUTF.pm',	'MapUTF.pmX')
 	and File::Copy::move('MapUTF.xs',	'MapUTF.xsX')
@@ -18,7 +18,7 @@ elsif ($arg =~ /^x/i and -f "MapUTF.xsX") {
     print STDERR "Enabling XS in sources...\n";
 
     die "***** Failed, sources could be inconsistent! *****\n"
-     unless File::Copy::move('MANIFEST',	'MANIFEST.N')
+    unless  File::Copy::move('MANIFEST',	'MANIFEST.N')
 	and File::Copy::move('MANIFEST.X',	'MANIFEST')
 	and File::Copy::move('MapUTF.pm',	'MapUTF.pmN')
 	and File::Copy::move('MapUTF.xsX',	'MapUTF.xs')

@@ -1,14 +1,14 @@
 
-BEGIN { $| = 1; print "1..241\n"; }
+BEGIN { $| = 1; printf "1..%d\n", 1 + 20 * 18; }
 END {print "not ok 1\n" unless $loaded;}
 
 use ShiftJIS::CP932::MapUTF qw(:all);
 $loaded = 1;
 print "ok 1\n";
 
-my $hasUnicode = defined &cp932_to_unicode;
+$hasUnicode = defined &cp932_to_unicode;
 
-my @arys = (
+@arys = (
   [ "",   "",   "" ],
   [ "\n\n\0\n", "\n\n\0\n", "n:n:0:n" ],
   [ "ABC\0\0\0", "\x41\x42\x43\0\0\0", "41:42:43:0:0:0" ],
@@ -39,7 +39,6 @@ my @arys = (
   [ "\xFA\x5B", "\xE2\x88\xB5", "2235", "\x81\xE6" ],
 );
 
-my $ary;
 for $ary (@arys) {
     my $cp932   = $ary->[0];
     my $cp932re = defined $ary->[3] ? $ary->[3] : $ary->[0];
@@ -50,6 +49,12 @@ for $ary (@arys) {
     my $utf16be = pack 'n*', @char;
     my $utf32le = pack 'V*', @char;
     my $utf32be = pack 'N*', @char;
+    my $utf16_l = pack 'v*', 0xFEFF, @char;
+    my $utf16_b = pack 'n*', 0xFEFF, @char;
+    my $utf16_n = pack 'n*', @char;
+    my $utf32_l = pack 'V*', 0xFEFF, @char;
+    my $utf32_b = pack 'N*', 0xFEFF, @char;
+    my $utf32_n = pack 'N*', @char;
 
     print !$hasUnicode || $unicode eq cp932_to_unicode(sub {""}, $cp932)
 	? "ok" : "not ok" , " ", ++$loaded, "\n";
@@ -86,5 +91,24 @@ for $ary (@arys) {
 
     print $cp932re eq utf32be_to_cp932(sub {""}, $utf32be)
 	? "ok" : "not ok" , " ", ++$loaded, "\n";
-}
 
+    print $cp932re eq utf16_to_cp932(sub {""}, $utf16_b)
+	? "ok" : "not ok" , " ", ++$loaded, "\n";
+
+    print $cp932re eq utf16_to_cp932(sub {""}, $utf16_l)
+	? "ok" : "not ok" , " ", ++$loaded, "\n";
+
+    print $cp932re eq utf16_to_cp932(sub {""}, $utf16_n)
+	? "ok" : "not ok" , " ", ++$loaded, "\n";
+
+    print $cp932re eq utf32_to_cp932(sub {""}, $utf32_b)
+	? "ok" : "not ok" , " ", ++$loaded, "\n";
+
+    print $cp932re eq utf32_to_cp932(sub {""}, $utf32_l)
+	? "ok" : "not ok" , " ", ++$loaded, "\n";
+
+    print $cp932re eq utf32_to_cp932(sub {""}, $utf32_n)
+	? "ok" : "not ok" , " ", ++$loaded, "\n";}
+
+1;
+__END__

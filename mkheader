@@ -14,14 +14,16 @@ my $wc = 'U16';
 
 my(%sbcs, %dbcs, %ucs, %maxlen);
 
-use vars qw(%CP932_UNI %UNI_CP932);
+use vars qw(%CP932_UNI %UNI_CP932 %Fallback);
 
 my $dummy; # to avoid "once used"...
 $dummy = %ShiftJIS::CP932::MapUTF::CP932_UNI;
 $dummy = %ShiftJIS::CP932::MapUTF::UNI_CP932;
+$dummy = %ShiftJIS::CP932::MapUTF::Fallback;
 
 *CP932_UNI = \ %ShiftJIS::CP932::MapUTF::CP932_UNI;
 *UNI_CP932 = \ %ShiftJIS::CP932::MapUTF::UNI_CP932;
+*Fallback  = \ %ShiftJIS::CP932::MapUTF::Fallback;
 
 sub u8len {
     my $uv = shift;
@@ -124,6 +126,14 @@ printf "#define MaxLenFmU8  (%d)\n", $maxlen{FmU8 };
 printf "#define MaxLenFmU16 (%d)\n", $maxlen{FmU16};
 printf "#define MaxLenFmU32 (%d)\n", $maxlen{FmU32};
 print "\n";
+
+print "U16 fb_latin1_to_cp932 [] = {\n";
+foreach (my $ch = 0xA0; $ch <= 0xFF; $ch++) {
+    print "\t0x";
+    print unpack('H*', exists $Fallback{$ch} ? $Fallback{$ch} : "\0");
+    print $ch == 0xFF ? "\n" : $ch % 8 == 7 ? ",\n" : ",";
+}
+print "};\n\n";
 
 foreach my $le (sort { $a <=> $b } keys %ucs) {
     print "$wc tocp932_$le [256] = {\n";

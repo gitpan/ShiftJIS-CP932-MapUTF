@@ -153,13 +153,13 @@ ord_in_utf8(U8 *s, STRLEN curlen, STRLEN *retlen)
 }
 
 
-STRLEN
+U8*
 app_in_utf16le(U8* s, UV uv)
 {
     if (uv <= 0xFFFF) {
 	*s++ = (U8)(uv & 0xff);
 	*s++ = (U8)(uv >> 8);
-	return 2;
+	return s;
     }
     else if (Is_VALID_UTF(uv)) {
 	int hi, lo;
@@ -170,20 +170,20 @@ app_in_utf16le(U8* s, UV uv)
 	*s++ = (U8)(hi >> 8);
 	*s++ = (U8)(lo & 0xff);
 	*s++ = (U8)(lo >> 8);
-	return 4;
+	return s;
     }
     else
-	return 0;
+	return s;
 }
 
 
-STRLEN
+U8*
 app_in_utf16be(U8* s, UV uv)
 {
     if (uv <= 0xFFFF) {
 	*s++ = (U8)(uv >> 8);
 	*s++ = (U8)(uv & 0xff);
-	return 2;
+	return s;
     }
     else if (Is_VALID_UTF(uv)) {
 	int hi, lo;
@@ -194,14 +194,14 @@ app_in_utf16be(U8* s, UV uv)
 	*s++ = (U8)(hi & 0xff);
 	*s++ = (U8)(lo >> 8);
 	*s++ = (U8)(lo & 0xff);
-	return 4;
+	return s;
     }
     else
-	return 0;
+	return s;
 }
 
 
-STRLEN
+U8*
 app_in_utf32le(U8* s, UV uv)
 {
     if (Is_VALID_UTF(uv)) {
@@ -209,14 +209,14 @@ app_in_utf32le(U8* s, UV uv)
 	*s++ = (U8)((uv >>  8) & 0xff);
 	*s++ = (U8)((uv >> 16) & 0xff);
 	*s++ = (U8)((uv >> 24) & 0xff);
-	return 4;
+	return s;
     }
     else
-	return 0;
+	return s;
 }
 
 
-STRLEN
+U8*
 app_in_utf32be(U8* s, UV uv)
 {
     if (Is_VALID_UTF(uv)) {
@@ -224,39 +224,39 @@ app_in_utf32be(U8* s, UV uv)
 	*s++ = (U8)((uv >> 16) & 0xff);
 	*s++ = (U8)((uv >>  8) & 0xff);
 	*s++ = (U8)((uv      ) & 0xff);
-	return 4;
+	return s;
     }
     else
-	return 0;
+	return s;
 }
 
 
-STRLEN
+U8*
 app_in_utf8(U8* s, UV uv)
 {
     if (uv < 0x80) {
 	*s++ = (U8)(uv & 0xff);
-	return 1;
+	return s;
     }
     if (uv < 0x800) {
 	*s++ = (U8)(( uv >>  6)         | 0xc0);
 	*s++ = (U8)(( uv        & 0x3f) | 0x80);
-	return 2;
+	return s;
     }
     if (uv < 0x10000) {
 	*s++ = (U8)(( uv >> 12)         | 0xe0);
 	*s++ = (U8)(((uv >>  6) & 0x3f) | 0x80);
 	*s++ = (U8)(( uv        & 0x3f) | 0x80);
-	return 3;
+	return s;
     }
     if (Is_VALID_UTF(uv)) {
 	*s++ = (U8)(( uv >> 18)         | 0xf0);
 	*s++ = (U8)(((uv >> 12) & 0x3f) | 0x80);
 	*s++ = (U8)(((uv >>  6) & 0x3f) | 0x80);
 	*s++ = (U8)(( uv        & 0x3f) | 0x80);
-	return 4;
+	return s;
     }
-    return 0;
+    return s;
 }
 
 #endif

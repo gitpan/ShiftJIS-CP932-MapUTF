@@ -6,6 +6,7 @@ MANIFEST.X
 MapUTF.pm
 MapUTF.pmX
 MapUTF.pod
+MapUTF.pod.jp
 MapUTF.xsX
 MapUTF/Supplements.pm
 mkheader
@@ -20,3 +21,8 @@ t/t07supl.t
 t/t08illeg.t
 t/t09illfb.t
 t/t10heavy.t
+t/t11grade.t
+t/t12trail.t
+t/t13gaiji.t
+t/t14undef.t
+t/t15fall.t

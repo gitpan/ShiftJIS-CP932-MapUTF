@@ -3,10 +3,11 @@ BEGIN { $| = 1; print "1..6\n"; }
 END {print "not ok 1\n" unless $loaded;}
 
 use ShiftJIS::CP932::MapUTF qw(:all);
+$^W = 1;
 $loaded = 1;
 print "ok 1\n";
 
-my $hasUnicode = defined &cp932_to_unicode;
+$hasUnicode = defined &cp932_to_unicode;
 
 sub hexNCR {
     my ($char, $byte) = @_;
@@ -14,7 +15,7 @@ sub hexNCR {
     die sprintf "illegal byte 0x%02x was found", $byte;
 }
 
-#####
+##### 2..6
 
 my @hangul = 0xAC00..0xD7AF;
 my $h_u16l = pack 'v*', @hangul;
@@ -38,4 +39,9 @@ print $h_ncr eq utf32be_to_cp932(\&hexNCR, $h_u32b)
 
 print !$hasUnicode || $h_ncr eq unicode_to_cp932(\&hexNCR, $h_uni)
     ? "ok" : "not ok" , " ", ++$loaded, "\n";
+
+#####
+
+1;
+__END__
 

@@ -10,7 +10,7 @@ require Exporter;
 @EXPORT = qw(to_cp932_supplements);
 @EXPORT_OK = qw(%Supplements);
 
-$VERSION = '0.21';
+$VERSION = '0.22';
 
 %Supplements = (
   0x00A2,	# CENT SIGN
@@ -95,8 +95,10 @@ ShiftJIS::CP932::MapUTF::Supplements - Supplemental Mapping from Unicode to Micr
   use ShiftJIS::CP932::MapUTF::Supplements;
 
   $cp932_string  = utf8_to_cp932   (\&to_cp932_supplements, $utr8_string);
+  $cp932_string  = utf16_to_cp932  (\&to_cp932_supplements, $utf16_string);
   $cp932_string  = utf16le_to_cp932(\&to_cp932_supplements, $utf16le_string);
   $cp932_string  = utf16be_to_cp932(\&to_cp932_supplements, $utf16be_string);
+  $cp932_string  = utf32_to_cp932  (\&to_cp932_supplements, $utf32_string);
   $cp932_string  = utf32le_to_cp932(\&to_cp932_supplements, $utf32le_string);
   $cp932_string  = utf32be_to_cp932(\&to_cp932_supplements, $utf32be_string);
   $cp932_string  = unicode_to_cp932(\&to_cp932_supplements, $unicode_string);

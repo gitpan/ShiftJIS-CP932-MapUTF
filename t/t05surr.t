@@ -61,3 +61,5 @@ print "\x00" eq utf32be_to_cp932(sub {""}, "\xDB\x00\0\0\x00\x00\0\0")
 print "\x00" eq utf8_to_cp932(sub {""}, "\xED\xAC\x80\x00")
     ? "ok" : "not ok" , " ", ++$loaded, "\n";
 
+1;
+__END__

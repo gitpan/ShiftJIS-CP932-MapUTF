@@ -1,7 +1,17 @@
 Revision history for Perl module ShiftJIS::CP932::MapUTF.
 
+0.30  Sun May 05 11:12:21 2003
+    - clarified and documented on some ambiguous behaviors.
+    - added the 3rd parameter, OPTION.
+      'g', 's', 't' for cp932-to-unicode conversions.
+      'g', 's', 'f' for unicode-to-cp932 conversions.
+    - added utf16_to_cp932() and utf32_to_cp932().
+      [but not yet cp932_to_utf16() and cp932_to_utf32(); cf. Export in POD.]
+    - modified t04xncr.t avoiding a non-character.
+    - added new tests, t11grade.t to t15fall.t.
+
 0.21  Sun Nov 03 19:32:21 2002
-    - fix a momery leak when the process died in a callback.
+    - fixed a momery leak when the process died in a callback.
       like: eval { utf32be_to_cp932(sub { die }, "\x00"); };
 
 0.20  Sat Nov 02 14:42:04 2002
@@ -24,7 +34,7 @@ Revision history for Perl module ShiftJIS::CP932::MapUTF.
     - some doc fix.
 
 0.11  Sun Feb 10 17:07:22 2002
-    - add ShiftJIS::CP932::MapUTF::Supplements (experimental).
+    - added ShiftJIS::CP932::MapUTF::Supplements (experimental).
 
 0.10  Sun Jan 20 19:44:06 2002
     - some detypo in POD and README.
@@ -46,13 +56,13 @@ Revision history for Perl module ShiftJIS::CP932::MapUTF.
     - input/output of wide characters are abandoned.
 
 0.04  Sat Sep 08 12:11:15 2001
-    - modify test.t: Perl 5.005 warns against '\x{hhhh}'.
+    - modified test.t: Perl 5.005 warns against '\x{hhhh}'.
 
 0.03  Thu Sep 06 22:15:21 2001
     - fix: wrong utf8 regex.
 
 0.02  Sun Jun 17 01:39:12 2001
-    - add the CODEREF argument.
+    - added the CODEREF argument.
 
 0.01  Wed Jun 13 20:14:08 2001
     - original version; created by h2xs 1.19
