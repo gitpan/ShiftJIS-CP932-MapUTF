@@ -1,5 +1,8 @@
 Revision history for Perl module ShiftJIS::CP932::MapUTF.
 
+0.09  Sun Jan 20 11:26:14 2002
+    - Halfwidth Katakana take 4 bytes in UTF-EBCDIC.
+
 0.08  Sun Jan 20 10:26:38 2002
     - now understands wide characters;
       but only works on Unicode-oriented Perl (i.e. Perl 5.6 or later).

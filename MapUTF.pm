@@ -17,7 +17,7 @@ require AutoLoader;
 );
 @EXPORT_OK = ();
 
-$VERSION = '0.08';
+$VERSION = '0.09';
 
 bootstrap ShiftJIS::CP932::MapUTF $VERSION;
 

@@ -58,7 +58,7 @@ cp932_to_unicode (arg1,arg2=0)
     SV *src, *dst, *cvref;
     STRLEN srclen, dstlen, dstcur, mblen;
     STRLEN maxlen = 3;
-	/* ASCII: 1 to 2; kana: 1 to 3; Greak: 2 to 2; Kanji: 2 to 3 */
+	/* ASCII: 1 to 1; kana: 1 to 3|4; Greak: 2 to 2; Kanji: 2 to 3|4 */
     U8 *s, *e, *p, *d, uni[UTF8_MAXLEN + 1];
     UV uv;
     struct leading lb;
@@ -68,7 +68,9 @@ cp932_to_unicode (arg1,arg2=0)
 	if (SvROK(arg1) && SvTYPE(SvRV(arg1)) == SVt_PVCV)
 	    cvref = SvRV(arg1);
 	else
-	    croak("ShiftJIS::CP932::MapUTF 1st argument is not CODEREF.");
+	    croak("ShiftJIS::CP932::MapUTF 1st argument is not CODEREF");
+
+    maxlen = UNISKIP(0xff71); /* 3 or 4; HALFWIDTH KATAKANA LETTER A */
 
     src = cvref ? arg2 : arg1;
     s = (U8*)SvPV(src,srclen);
@@ -127,7 +129,7 @@ cp932_to_utf16le (arg1, arg2=0)
 	if (SvROK(arg1) && SvTYPE(SvRV(arg1)) == SVt_PVCV)
 	    cvref = SvRV(arg1);
 	else
-	    croak("ShiftJIS::CP932::MapUTF 1st argument is not CODEREF.");
+	    croak("ShiftJIS::CP932::MapUTF 1st argument is not CODEREF");
 
     src = cvref ? arg2 : arg1;
     s = (U8*)SvPV(src,srclen);
@@ -181,7 +183,7 @@ unicode_to_cp932 (arg1,arg2=0)
     STRLEN srclen, dstlen, retlen, dstcur;
     STRLEN maxlen = 2; 
 	/* ASCII: 1 to 1; latin1: 1 to 2; (if SvUTF8 off)
-	   kana:  3 to 1; Greek:  2 to 2; Kanji: 3 to 2 */
+	   kana: 3|4 to 1; Greek:  2 to 2; Kanji: 3|4 to 2 */
     U8 *s, *e, *p, *d, mbc[3];
     int ulen;
     U16 j, u, *t;
@@ -191,7 +193,7 @@ unicode_to_cp932 (arg1,arg2=0)
 	if (SvROK(arg1) && SvTYPE(SvRV(arg1)) == SVt_PVCV)
 	    cvref = SvRV(arg1);
 	else
-	    croak("ShiftJIS::CP932::MapUTF 1st argument is not CODEREF.");
+	    croak("ShiftJIS::CP932::MapUTF 1st argument is not CODEREF");
 
     src = cvref ? arg2 : arg1;
     if (!SvUTF8(src)) {
@@ -267,7 +269,7 @@ utf16le_to_cp932 (arg1,arg2=0)
 	if (SvROK(arg1) && SvTYPE(SvRV(arg1)) == SVt_PVCV)
 	    cvref = SvRV(arg1);
 	else
-	    croak("ShiftJIS::CP932::MapUTF 1st argument is not CODEREF.");
+	    croak("ShiftJIS::CP932::MapUTF 1st argument is not CODEREF");
 
     src = cvref ? arg2 : arg1;
     s = (U8*)SvPV(src,srclen);
