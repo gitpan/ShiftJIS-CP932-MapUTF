@@ -1,5 +1,13 @@
 Revision history for Perl module ShiftJIS::CP932::MapUTF.
 
+0.32  Sun Jul 20 13:23:44 2003
+    - changed INSTALLATION (cf. README).
+    - simplified Makefile.PL.
+    - modified how to build XSUB edition (sorry for inconvenience).
+      The purePerl-XSUB converter is now provided as two perl script files,
+      named "enableXS" and "disableXS".
+      (no longer <perl Makefile.PL xs> and <perl Makefile.PL noxs>.)
+
 0.31  Sun May 04 22:48:10 2003
     - doc tweaks and detypos.
     - removed double-byte characters from MapUTF.pod.

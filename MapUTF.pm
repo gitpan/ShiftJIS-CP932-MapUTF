@@ -7,9 +7,11 @@ use vars qw($VERSION $PACKAGE @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
 
 require Exporter;
 require DynaLoader;
-require AutoLoader;
 
 @ISA = qw(Exporter DynaLoader);
+
+$VERSION = '0.32';
+$PACKAGE = 'ShiftJIS::CP932::MapUTF'; # __PACKAGE__
 
 @EXPORT = qw(
     cp932_to_unicode  unicode_to_cp932
@@ -31,9 +33,6 @@ require AutoLoader;
 
 @EXPORT_OK = map @$_, values %EXPORT_TAGS;
 $EXPORT_TAGS{all}  = [ @EXPORT_OK ];
-
-$VERSION = '0.31';
-$PACKAGE = 'ShiftJIS::CP932::MapUTF'; # __PACKAGE__
 
 bootstrap ShiftJIS::CP932::MapUTF $VERSION;
 

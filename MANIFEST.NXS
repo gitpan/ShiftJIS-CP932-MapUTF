@@ -1,8 +1,10 @@
 Changes
 Makefile.PL
 README
+disableXS
+enableXS
 MANIFEST
-MANIFEST.X
+MANIFEST.XS
 MapUTF.pm
 MapUTF.pmX
 MapUTF.pod
