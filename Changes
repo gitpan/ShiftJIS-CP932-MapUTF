@@ -1,5 +1,8 @@
 Revision history for Perl module ShiftJIS::CP932::MapUTF.
 
+0.10  Sun Jan 20 19:44:06 2002
+    - some detypo in POD and README.
+
 0.09  Sun Jan 20 11:26:14 2002
     - Halfwidth Katakana take 4 bytes in UTF-EBCDIC.
 

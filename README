@@ -1,4 +1,4 @@
-ShiftJIS::CP932::MapUTF version 0.09
+ShiftJIS::CP932::MapUTF version 0.10
 ================
 
 NAME
@@ -16,10 +16,10 @@ DESCRIPTION
 This module provides the following functions:
 
   cp932_to_unicode() converts CP932 to Unicode of Perl, i.e. UTF-8/UTF-EBCDIC.
-  cp932_to_utf16be() converts CP932 to UTF-16BE.
-  cp932_to_utf16le() converts CP932 to UTF-16LE.
+  cp932_to_utf16be() converts CP932 to UTF-16BE (big endian).
+  cp932_to_utf16le() converts CP932 to UTF-16LE (little endian).
   unicode_to_cp932() converts Unicode  to CP932.
-  utf16be_to_cp932() converts UTF-16LE to CP932.
+  utf16be_to_cp932() converts UTF-16BE to CP932.
   utf16le_to_cp932() converts UTF-16LE to CP932.
 
 INSTALLATION

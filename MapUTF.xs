@@ -25,7 +25,7 @@
 #endif /* utf8n_to_uvchr */ 
 
 static void
-sv_cat_cvref (SV *dst, SV *cv, SV *sv)
+sv_cat_retcvref (SV *dst, SV *cv, SV *sv)
 {
     dSP;
     int count;
@@ -50,7 +50,7 @@ sv_cat_cvref (SV *dst, SV *cv, SV *sv)
 MODULE = ShiftJIS::CP932::MapUTF	PACKAGE = ShiftJIS::CP932::MapUTF
 
 void
-cp932_to_unicode (arg1,arg2=0)
+cp932_to_unicode (arg1, arg2=0)
     SV* arg1
     SV* arg2
   PROTOTYPE: $;$
@@ -87,11 +87,11 @@ cp932_to_unicode (arg1,arg2=0)
 	    lb = fmcp932_tbl[*p];
 	    uv = (lb.tbl != NULL) ? lb.tbl[p[1]] : lb.sbc;
 	    if (uv || !*p) {
-		uvuni_to_utf8(uni, uv);
-		sv_catpvn(dst, uni, UNISKIP(uv));
+		(void)uvuni_to_utf8(uni, uv);
+		sv_catpvn(dst, (char*)uni, (STRLEN)UNISKIP(uv));
 	    }
 	    else
-		sv_cat_cvref(dst, cvref, newSVpvn(p,mblen));
+		sv_cat_retcvref(dst, cvref, newSVpvn((char*)p, mblen));
 	}
     }
     else {
@@ -121,7 +121,7 @@ cp932_to_utf16le (arg1, arg2=0)
     STRLEN srclen, dstlen, dstcur, mblen;
     STRLEN maxlen = 2; /* X0201 : 1 to 2; X0208 : 2 to 2 */
     U8 *s, *e, *p, *d, ucs[3];
-    U16 u;
+    UV uv;
     struct leading lb;
   PPCODE:
     cvref = NULL;
@@ -143,14 +143,14 @@ cp932_to_utf16le (arg1, arg2=0)
 	for (p = s; p < e; p += mblen) {
 	    mblen = isCP932MBLEN(p);
 	    lb = fmcp932_tbl[*p];
-	    u = (lb.tbl != NULL) ? lb.tbl[p[1]] : lb.sbc;
-	    if (u || !*p) {
-		ucs[1-ix] = (U8)(u >> 8);
-		ucs[ix]   = (U8)(u & 0xff);
-		sv_catpvn(dst, ucs, 2);
+	    uv = (lb.tbl != NULL) ? lb.tbl[p[1]] : lb.sbc;
+	    if (uv || !*p) {
+		ucs[1-ix] = (U8)(uv >> 8);
+		ucs[ix]   = (U8)(uv & 0xff);
+		sv_catpvn(dst, (char*)ucs, 2);
 	    }
 	    else 
-		sv_cat_cvref(dst, cvref, newSVpvn(p, mblen));
+		sv_cat_retcvref(dst, cvref, newSVpvn((char*)p, mblen));
 	}
     }
     else {
@@ -158,13 +158,13 @@ cp932_to_utf16le (arg1, arg2=0)
 	for (p = s; p < e; p += mblen) {
 	    mblen = isCP932MBLEN(p);
 	    lb = fmcp932_tbl[*p];
-	    u = (lb.tbl != NULL) ? lb.tbl[p[1]] : lb.sbc;
-	    if (u || !*p) {
+	    uv = (lb.tbl != NULL) ? lb.tbl[p[1]] : lb.sbc;
+	    if (uv || !*p) {
 		if (ix)
-		    *d++ = (U8)(u >> 8); /* BE */
-		*d++ = (U8)(u & 0xff);
+		    *d++ = (U8)(uv >> 8); /* BE */
+		*d++ = (U8)(uv & 0xff);
 		if (!ix)
-		    *d++ = (U8)(u >> 8); /* LE */
+		    *d++ = (U8)(uv >> 8); /* LE */
 	    }
 	}
 	*d = '\0';
@@ -174,7 +174,7 @@ cp932_to_utf16le (arg1, arg2=0)
 
 
 void
-unicode_to_cp932 (arg1,arg2=0)
+unicode_to_cp932 (arg1, arg2=0)
     SV* arg1
     SV* arg2
   PROTOTYPE: $;$
@@ -186,7 +186,8 @@ unicode_to_cp932 (arg1,arg2=0)
 	   kana: 3|4 to 1; Greek:  2 to 2; Kanji: 3|4 to 2 */
     U8 *s, *e, *p, *d, mbc[3];
     int ulen;
-    U16 j, u, *t;
+    U16 j, *t;
+    UV uv;
   PPCODE:
     cvref = NULL;
     if (items == 2)
@@ -210,34 +211,34 @@ unicode_to_cp932 (arg1,arg2=0)
 
     if (cvref) {
 	for (p = s; p < e;) {
-	    u = utf8n_to_uvchr(p, e - p, &retlen, 0);
+	    uv = utf8n_to_uvchr(p, e - p, &retlen, 0);
 	    p += retlen;
-	    t = tocp932_tbl[u >> 8];
-	    j = t ? t[u & 0xff] : 0;
+	    t = tocp932_tbl[uv >> 8];
+	    j = t ? t[uv & 0xff] : 0;
 
-	    if (j || !u) {
+	    if (j || !uv) {
 		if (j >= 256) {
 		    mbc[0] = (U8)(j >> 8);
 		    mbc[1] = (U8)(j & 0xff);
-		    sv_catpvn(dst, mbc, 2);
+		    sv_catpvn(dst, (char*)mbc, 2);
 		}
 		else {
 		    mbc[0] = (U8)(j & 0xff);
-		    sv_catpvn(dst, mbc, 1);
+		    sv_catpvn(dst, (char*)mbc, 1);
 		}
 	    }
 	    else
-		sv_cat_cvref(dst, cvref, newSVuv(u));
+		sv_cat_retcvref(dst, cvref, newSVuv(uv));
 	}
     }
     else {
 	d = (U8*)SvPVX(dst);
 	for (p = s; p < e;) {
-	    u = utf8n_to_uvchr(p, e - p, &retlen, 0);
+	    uv = utf8n_to_uvchr(p, e - p, &retlen, 0);
 	    p += retlen;
-	    t = tocp932_tbl[u >> 8];
-	    j = t ? t[u & 0xff] : 0;
-	    if (j || !u) {
+	    t = tocp932_tbl[uv >> 8];
+	    j = t ? t[uv & 0xff] : 0;
+	    if (j || !uv) {
 		if (j >= 256)
 		    *d++ = (U8)(j >> 8);
 		*d++ = (U8)(j & 0xff);
@@ -250,7 +251,7 @@ unicode_to_cp932 (arg1,arg2=0)
 
 
 void
-utf16le_to_cp932 (arg1,arg2=0)
+utf16le_to_cp932 (arg1, arg2=0)
     SV* arg1
     SV* arg2
   PROTOTYPE: $;$
@@ -291,15 +292,15 @@ utf16le_to_cp932 (arg1,arg2=0)
 		if (j >= 256) {
 		    mbc[0] = (U8)(j >> 8);
 		    mbc[1] = (U8)(j & 0xff);
-		    sv_catpvn(dst, mbc, 2);
+		    sv_catpvn(dst, (char*)mbc, 2);
 		}
 		else {
 		    mbc[0] = (U8)(j & 0xff);
-		    sv_catpvn(dst, mbc, 1);
+		    sv_catpvn(dst, (char*)mbc, 1);
 		}
 	    }
 	    else {
-		uv = (row << 8) | cell;
+		uv = (UV)((row << 8) | cell);
 		if (0xD800 <= uv && uv <= 0xDBFF && p + 4 <= e) {
 		    row  = ix ? p[2] : p[3];
 		    cell = ix ? p[3] : p[2];
@@ -309,7 +310,7 @@ utf16le_to_cp932 (arg1,arg2=0)
 			p += 2;
 		    }
 		}
-		sv_cat_cvref(dst, cvref, newSVuv(uv));
+		sv_cat_retcvref(dst, cvref, newSVuv(uv));
 	    }
 	}
     } else {

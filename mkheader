@@ -1,7 +1,7 @@
 #!perl
 #
 # This mkheader script makes two C header files, "fmcp932.h" and "tocp932.h".
-# These files are used to build ShiftJIS::CP932::MapUTF_Fast
+# These files are used to build ShiftJIS::CP932::MapUTF
 #
 use 5.006;
 use strict;

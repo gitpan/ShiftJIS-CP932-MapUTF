@@ -17,7 +17,7 @@ require AutoLoader;
 );
 @EXPORT_OK = ();
 
-$VERSION = '0.09';
+$VERSION = '0.10';
 
 bootstrap ShiftJIS::CP932::MapUTF $VERSION;
 
@@ -70,10 +70,10 @@ Characters unmapped to Unicode, if C<CODEREF> is not specified, are deleted;
 if C<CODEREF> is specified, 
 converted using C<CODEREF> from the CP-932 character string.
 
-For example, converts C<\x82\xf2> to C<U+3094>, HIRAGANA LETTER VU,
+For example, converts C<\x82\xf2> to C<U+3094>, C<HIRAGANA LETTER VU>,
 in the Unicode.
 
-   cp932_to_utf8(
+   cp932_to_unicode(
        sub { $_[0] eq "\x82\xf2" ? "\x{3094}" : "" },
        $cp932_string
    );
@@ -97,7 +97,7 @@ Characters unmapped to Unicode, if C<CODEREF> is not specified, are deleted;
 if C<CODEREF> is specified,
 converted using C<CODEREF> from the CP-932 character string.
 
-For example, converts C<\x82\xf2> to C<U+3094>, HIRAGANA LETTER VU,
+For example, converts C<\x82\xf2> to C<U+3094>, C<HIRAGANA LETTER VU>,
 in the UTF-16LE encoding.
 
    cp932_to_utf16le(
