@@ -10,7 +10,7 @@ require DynaLoader;
 
 @ISA = qw(Exporter DynaLoader);
 
-$VERSION = '0.33';
+$VERSION = '0.34';
 $PACKAGE = 'ShiftJIS::CP932::MapUTF'; # __PACKAGE__
 
 @EXPORT = qw(

@@ -1,5 +1,8 @@
 Revision history for Perl module ShiftJIS::CP932::MapUTF.
 
+0.34  Sat Oct 18 12:22:31 2003
+    - removed JP pod.
+
 0.33  Sat Oct 11 20:34:47 2003
     - Internal tweak in XSUB: no longer relies on a string to be
       terminated with '\0'.

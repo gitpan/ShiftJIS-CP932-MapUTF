@@ -8,8 +8,7 @@ MANIFEST.NXS		MANIFEST for No-XSUB
 MapUTF.pm		.pm for XSUB
 MapUTF.pmN		.pm for No-XSUB
 MapUTF.xs		.xs for XSUB
-MapUTF.pod		POD in English
-MapUTF.jp		POD in Japanese
+MapUTF.pod		POD
 MapUTF/Supplements.pm
 mkheader
 scmuni.h
