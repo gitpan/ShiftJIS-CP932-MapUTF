@@ -1,0 +1,94 @@
+#!perl
+#
+# This mkheader script makes two C header files, "fmcp932.h" and "tocp932.h".
+# These files are used to build ShiftJIS::CP932::MapUTF_Fast
+#
+use 5.006;
+use strict;
+use warnings;
+
+my $Dir = '.';
+
+do "cp932map";
+
+my $wc = 'U16';
+
+my(%sbcs, %dbcs, %ucs);
+use vars qw(%CP932_UNI %UNI_CP932);
+
+die "no \%CP932_UNI!" unless %CP932_UNI; # avoid "once used"
+
+while (my($cp,$u) = each %CP932_UNI) {
+  if ($cp < 0x100) {
+    $sbcs{$cp} = $u;
+  }
+  else {
+    my($le,$tr) = unpack('CC', pack 'n', $cp);
+    $dbcs{ $le }{ $tr } = $u;
+  } 
+}
+
+open FH, ">$Dir/fmcp932.h" or die "fmcp932.h $!";
+binmode FH;
+select FH;
+
+print "struct leading { $wc sbc; $wc* tbl; };\n\n";
+
+foreach my $le (sort { $a <=> $b } keys %dbcs){
+  print "$wc fmcp932_$le [256] = {\n";
+  for(my $i = 0; $i < 256; $i++){
+    printf "\t%d", defined $dbcs{$le}{$i} ? $dbcs{$le}{$i} : 0;
+    print ','  if $i != 255;
+    print "\n" if $i % 8 == 7;
+  }
+  print "};\n\n";
+}
+
+{
+  print "struct leading fmcp932_tbl [] = {\n";
+  for(my $i = 0; $i < 256; $i++){
+    printf "\t{ %5d, %s }",
+      defined $sbcs{$i} ? $sbcs{$i} : 0,
+      defined $dbcs{$i} ? "fmcp932_$i" : "NULL";
+    print ','  if $i != 255;
+    print "\n";
+  }
+  print "};\n\n";
+}
+
+close FH;
+
+die "no \%UNI_CP932!" unless %UNI_CP932; # avoid "once used"
+
+while (my($u,$cp) = each %UNI_CP932) {
+  my($a,$b) = unpack('CC', pack 'n', $u);
+  $ucs{$a}{$b} = $cp;
+}
+
+open FH, ">$Dir/tocp932.h" or die "tocp932.h $!";
+binmode FH; select FH;
+
+foreach my $le (sort { $a <=> $b } keys %ucs){
+  print "$wc tocp932_$le [256] = {\n";
+  for(my $i = 0; $i < 256; $i++){
+    printf "\t%d", defined $ucs{$le}{$i} ? $ucs{$le}{$i} : 0;
+    print ','  if $i != 255;
+    print "\n" if $i % 8 == 7;
+  }
+  print "};\n\n";
+}
+
+{
+  print "$wc* tocp932_tbl [] = {\n";
+  for(my $i = 0; $i < 256; $i++){
+    print "\t", defined $ucs{$i} ? "tocp932_$i" : "NULL";
+    print ','  if $i != 255;
+    print "\n";
+  }
+  print "};\n\n";
+}
+
+close FH;
+
+1;
+__END__

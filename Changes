@@ -1,5 +1,15 @@
 Revision history for Perl module ShiftJIS::CP932::MapUTF.
 
+0.08  Sun Jan 20 10:26:38 2002
+    - now understands wide characters;
+      but only works on Unicode-oriented Perl (i.e. Perl 5.6 or later).
+
+0.07  Sun Oct 20 14:35:03 2001 (not released)
+    - unpaired surrogate.
+
+0.06  Sun Oct 13 16:24:52 2001 (not released)
+    - surrogate pairs are supported.
+
 0.05  Tue Oct 02 00:16:25 2001
     - input/output of wide characters are abandoned.
 

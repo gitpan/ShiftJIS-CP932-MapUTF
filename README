@@ -1,27 +1,30 @@
-ShiftJIS::CP932::MapUTF version 0.05
+ShiftJIS::CP932::MapUTF version 0.08
 ================
 
 NAME
 
-ShiftJIS::CP932::MapUTF - conversion between CP932 and unicode
+ShiftJIS::CP932::MapUTF - conversion between Microsoft CP932 and Unicode
 
 SYNOPSIS
 
   use ShiftJIS::CP932::MapUTF;
 
-  $utf8_string = cp932_to_utf8($cp932_string);
+  $utf8_string = cp932_to_unicode($cp932_string);
 
 DESCRIPTION
 
 This module provides the following functions:
 
-  cp932_to_utf8   converts CP932 to UTF-8
-  cp932_to_utf16  converts CP932 to UTF-16LE
-  utf8_to_cp932   converts UTF-8 to CP932 
-  utf16_to_cp932  converts UTF-16LE to CP932
+  cp932_to_unicode() converts CP932 to Unicode of Perl, i.e. UTF-8/UTF-EBCDIC.
+  cp932_to_utf16be() converts CP932 to UTF-16BE.
+  cp932_to_utf16le() converts CP932 to UTF-16LE.
+  unicode_to_cp932() converts Unicode  to CP932.
+  utf16be_to_cp932() converts UTF-16LE to CP932.
+  utf16le_to_cp932() converts UTF-16LE to CP932.
 
 INSTALLATION
 
+You need a C compiler to build this module.
 To install this module type the following:
 
    perl Makefile.PL
@@ -31,12 +34,13 @@ To install this module type the following:
 
 DEPENDENCIES
 
-  Perl 5.003 or later
+  Perl 5.6 or later
 
 CAVEAT
 
-This module doesn't understand any wide characters (see perlunicode).
-Use utf8::decode()/utf8::encode() on Perl 5.7 or later if necessary.
+This module up to version 0.07 doesn't understand any wide characters
+(see perlunicode); this is fixed.
+You'd update your Perl to version 5.6 or later if you use an older Perl.
 
 COPYRIGHT AND LICENCE
 
@@ -57,3 +61,4 @@ Microsoft PRB: Conversion Problem Between Shift-JIS and Unicode
 
 Unicode.org
 ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP932.TXT
+

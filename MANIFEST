@@ -1,6 +1,9 @@
 Changes
-MapUTF.pm
 Makefile.PL
-MANIFEST
 README
+MANIFEST
+MapUTF.pm
+MapUTF.xs
+mkheader
+cp932map
 t/test.t
