@@ -1,5 +1,10 @@
 Revision history for Perl module ShiftJIS::CP932::MapUTF.
 
+1.01  Wed Oct 11 00:01:34 2006
+    - POD, the section SEE ALSO:
+      The dead link at http://www.microsoft.com/typography/unicode/932.txt
+      was replaced with the page in WindowsBestFit under www.unicode.org
+
 1.00  Sun Mar 13 16:45:32 2005
     - META.yml is added.
     - Japanese POD named JAPANESE is added (again).

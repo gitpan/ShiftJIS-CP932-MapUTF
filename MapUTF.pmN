@@ -9,7 +9,7 @@ use vars qw(%CP932_UNI %UNI_CP932 %CP932_UTF8 %UTF8_CP932 %Fallback);
 require Exporter;
 @ISA = qw(Exporter);
 
-$VERSION = '1.00';
+$VERSION = '1.01';
 $PACKAGE = 'ShiftJIS::CP932::MapUTF'; # __PACKAGE__
 
 @EXPORT = (
@@ -41,7 +41,7 @@ my $charSJIS_DBC = '[\x81-\x9F\xE0-\xFC][\x40-\x7E\x80-\xFC]';
 my $charSJIS   = "(?:$charSJIS_SNG|$charSJIS_DBL)";
 my $charSJIS_t = "(?:$charSJIS_SNG|$charSJIS_DBC)";
 
-my $charUTF8 = 
+my $charUTF8 =
      '(?:[\x00-\x7F]|[\xC2-\xDF][\x80-\xBF]|'
    . '\xE0[\xA0-\xBF][\x80-\xBF]|'
    . '[\xE1-\xEF][\x80-\xBF][\x80-\xBF]|'
@@ -457,7 +457,7 @@ sub toUTF8 {
   ( ($u        & 0x3f) | 0x80)
  ) :
     $u < 0x10000 ?
- pack("CCC", 
+ pack("CCC",
   ( ($u >> 12)         | 0xe0),
   ((($u >>  6) & 0x3f) | 0x80),
   ( ($u        & 0x3f) | 0x80)

@@ -265,7 +265,7 @@ if necessary.
 
 SADAHIRO Tomoyuki <SADAHIRO@cpan.org>
 
-Copyright(C) 2001-2005, SADAHIRO Tomoyuki. Japan. All rights reserved.
+Copyright(C) 2001-2006, SADAHIRO Tomoyuki. Japan. All rights reserved.
 
 This module is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
@@ -282,7 +282,7 @@ Conversion Problem Between Shift-JIS and Unicode
 
 http://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP932.TXT
 
-http://www.microsoft.com/typography/unicode/932.txt (dead link)
+http://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WindowsBestFit/bestfit932.txt
 
 http://www.microsoft.com/globaldev/reference/dbcs/932.htm
 

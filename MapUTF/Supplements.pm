@@ -10,7 +10,7 @@ require Exporter;
 @EXPORT = qw(to_cp932_supplements);
 @EXPORT_OK = qw(%Supplements);
 
-$VERSION = '1.00';
+$VERSION = '1.01';
 
 %Supplements = (
   0x00A2,	# CENT SIGN
@@ -112,9 +112,9 @@ from Unicode to CP-932, via a coderef.
 
 =item C<$cp932_char = to_cp932_supplements($unicode_codepoint)>
 
-Returns a CP-932 character (as a string) for some Unicode code points
-unmapped to CP-932.
-Otherwise returns a null string.
+It returns a CP-932 character (as a string) for some Unicode
+code points which are not mapped to CP-932.
+Otherwise it returns a null string.
 
 e.g. C<to_cp932_supplements(0xA5)> returns C<"\x5C">.
 
@@ -131,7 +131,7 @@ may be added, modified, or removed in future.
 
 SADAHIRO Tomoyuki <SADAHIRO@cpan.org>
 
-Copyright(C) 2001-2005, SADAHIRO Tomoyuki. Japan. All rights reserved.
+Copyright(C) 2001-2006, SADAHIRO Tomoyuki. Japan. All rights reserved.
 
 This module is free software; you can redistribute it
 and/or modify it under the same terms as Perl itself.

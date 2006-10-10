@@ -18,7 +18,7 @@
 
 #define UTF8A_TRAIL(c)	(((c) & 0xC0) == 0x80)
 
-UV
+static UV
 ord_in_utf16le(U8 *s, STRLEN curlen, STRLEN *retlen)
 {
     UV uv, luv;
@@ -48,7 +48,7 @@ ord_in_utf16le(U8 *s, STRLEN curlen, STRLEN *retlen)
 }
 
 
-UV
+static UV
 ord_in_utf16be(U8 *s, STRLEN curlen, STRLEN *retlen)
 {
     UV uv, luv;
@@ -78,7 +78,7 @@ ord_in_utf16be(U8 *s, STRLEN curlen, STRLEN *retlen)
 }
 
 
-UV
+static UV
 ord_in_utf32le(U8 *s, STRLEN curlen, STRLEN *retlen)
 {
     if (curlen < 4) {
@@ -93,7 +93,7 @@ ord_in_utf32le(U8 *s, STRLEN curlen, STRLEN *retlen)
 }
 
 
-UV
+static UV
 ord_in_utf32be(U8 *s, STRLEN curlen, STRLEN *retlen)
 {
     if (curlen < 4) {
@@ -108,7 +108,7 @@ ord_in_utf32be(U8 *s, STRLEN curlen, STRLEN *retlen)
 }
 
 
-UV
+static UV
 ord_in_utf8(U8 *s, STRLEN curlen, STRLEN *retlen)
 {
     UV uv = 0;
@@ -163,7 +163,7 @@ ord_in_utf8(U8 *s, STRLEN curlen, STRLEN *retlen)
 }
 
 
-U8*
+static U8*
 app_in_utf16le(U8* s, UV uv)
 {
     if (uv <= 0xFFFF) {
@@ -184,7 +184,7 @@ app_in_utf16le(U8* s, UV uv)
 }
 
 
-U8*
+static U8*
 app_in_utf16be(U8* s, UV uv)
 {
     if (uv <= 0xFFFF) {
@@ -205,7 +205,7 @@ app_in_utf16be(U8* s, UV uv)
 }
 
 
-U8*
+static U8*
 app_in_utf32le(U8* s, UV uv)
 {
     if (Is_VALID_UTF(uv)) {
@@ -218,7 +218,7 @@ app_in_utf32le(U8* s, UV uv)
 }
 
 
-U8*
+static U8*
 app_in_utf32be(U8* s, UV uv)
 {
     if (Is_VALID_UTF(uv)) {
@@ -231,7 +231,7 @@ app_in_utf32be(U8* s, UV uv)
 }
 
 
-U8*
+static U8*
 app_in_utf8(U8* s, UV uv)
 {
     if (uv < 0x80) {
