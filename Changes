@@ -1,5 +1,8 @@
 Revision history for Perl module ShiftJIS::CP932::MapUTF.
 
+1.02  Mon Jun  4 22:11:58 2007
+    - mkheader, unilen() - avoid unpack('C*') on unicode.
+
 1.01  Wed Oct 11 00:01:34 2006
     - POD, the section SEE ALSO:
       The dead link at http://www.microsoft.com/typography/unicode/932.txt

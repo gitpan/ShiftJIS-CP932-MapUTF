@@ -1,5 +1,5 @@
 
-=head1 NAME (名前)
+=head1 名称
 
 ShiftJIS::CP932::MapUTF - Microsoft CP-932とUnicodeとの変換
 
@@ -262,7 +262,7 @@ C<utf8::decode>/C<utf8::encode>（F<utf8> を参照）を使ってください。
 
 SADAHIRO Tomoyuki <SADAHIRO@cpan.org> （貞廣 知行）
 
-Copyright(C) 2001-2006, SADAHIRO Tomoyuki. Japan. All rights reserved.
+Copyright(C) 2001-2007, SADAHIRO Tomoyuki. Japan. All rights reserved.
 
 This module is free software; you can redistribute it
 and/or modify it under the same terms as Perl itself.

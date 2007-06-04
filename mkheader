@@ -31,7 +31,7 @@ sub u8len {
 }
 sub u16len { ($_[0] > 0xFFFF) ? 4 : 2 }
 sub u32len { 4 }
-sub unilen { scalar @{ [ unpack 'C*', pack 'U', shift ] } }
+sub unilen { use bytes; return length(pack 'U', shift) }
 sub floor  { int($_[0]) + ($_[0] <=> int($_[0])); }
 
 die "no \%CP932_UNI!" unless %CP932_UNI; # avoid "once used"

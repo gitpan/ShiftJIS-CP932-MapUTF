@@ -10,7 +10,7 @@ require Exporter;
 @EXPORT = qw(to_cp932_supplements);
 @EXPORT_OK = qw(%Supplements);
 
-$VERSION = '1.01';
+$VERSION = '1.02';
 
 %Supplements = (
   0x00A2,	# CENT SIGN
@@ -131,7 +131,7 @@ may be added, modified, or removed in future.
 
 SADAHIRO Tomoyuki <SADAHIRO@cpan.org>
 
-Copyright(C) 2001-2006, SADAHIRO Tomoyuki. Japan. All rights reserved.
+Copyright(C) 2001-2007, SADAHIRO Tomoyuki. Japan. All rights reserved.
 
 This module is free software; you can redistribute it
 and/or modify it under the same terms as Perl itself.
