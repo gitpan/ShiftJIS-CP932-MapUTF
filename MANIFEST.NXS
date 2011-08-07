@@ -1,13 +1,13 @@
 Changes
 disableXS
 enableXS
-JAPANESE
 Makefile.PL
 MANIFEST		MANIFEST for No-XSUB
 MANIFEST.XS		MANIFEST for XSUB
 MapUTF.pm		.pm for No-XSUB
 MapUTF.pmX		.pm for XSUB
 MapUTF.pod		POD
+MapUTF/Japanese.pod
 MapUTF/Supplements.pm
 MapUTF.xsX		.xs for XSUB
 META.yml

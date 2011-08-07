@@ -17,8 +17,12 @@ if (-f "MapUTF.xs") {
 WriteMakefile(
     'NAME'		=> 'ShiftJIS::CP932::MapUTF',
     'VERSION_FROM'	=> 'MapUTF.pm',
+    'ABSTRACT_FROM'	=> 'MapUTF.pod',
+    'AUTHOR'		=> 'SADAHIRO Tomoyuki <SADAHIRO@cpan.org>',
+    'LICENSE'		=> 'perl',
     'clean'		=> $clean,
     'PREREQ_PM'	  	=> {
+	bytes		=> 0,
 	Carp		=> 0,
 	DynaLoader	=> 0,
 	Exporter	=> 0,

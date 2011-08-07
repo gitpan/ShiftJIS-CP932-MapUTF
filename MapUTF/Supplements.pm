@@ -10,7 +10,7 @@ require Exporter;
 @EXPORT = qw(to_cp932_supplements);
 @EXPORT_OK = qw(%Supplements);
 
-$VERSION = '1.02';
+$VERSION = '1.03';
 
 %Supplements = (
   0x00A2,	# CENT SIGN

@@ -1,5 +1,8 @@
 Revision history for Perl module ShiftJIS::CP932::MapUTF.
 
+1.03  Sun Aug  7 10:28:03 2011
+    - fix the tarball with world writable files.
+
 1.02  Mon Jun  4 22:11:58 2007
     - mkheader, unilen() - avoid unpack('C*') on unicode.
 

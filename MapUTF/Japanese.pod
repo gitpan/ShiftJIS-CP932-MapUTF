@@ -1,4 +1,8 @@
 
+=pod
+
+=encoding Shift_JIS
+
 =head1 –¼Ì
 
 ShiftJIS::CP932::MapUTF - Microsoft CP-932‚ÆUnicode‚Æ‚Ì•ÏŠ·
